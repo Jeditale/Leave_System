@@ -1,17 +1,70 @@
-<mat-card class="leave-approval">
+<mat-card>
   <mat-card-header>
-    <mat-card-title>Leave Requests Pending Approval</mat-card-title>
+    <mat-card-title>Pending Leave Requests</mat-card-title>
   </mat-card-header>
   <mat-card-content>
-    <mat-list>
-      <mat-list-item *ngFor="let request of leaveRequests">
-        <div>
-          <h4>{{ request.userName }}</h4>
-          <p>{{ request.leaveType }} - {{ request.status }}</p>
-          <button mat-raised-button color="primary" (click)="approveLeave(request.id)">Approve</button>
-          <button mat-raised-button color="warn" (click)="rejectLeave(request.id)">Reject</button>
-        </div>
-      </mat-list-item>
-    </mat-list>
+    <div class="user-list-container">
+      <!-- User List Table with Pagination -->
+      <mat-table [dataSource]="paginatedData">
+        <ng-container matColumnDef="userName">
+          <mat-header-cell *matHeaderCellDef> User </mat-header-cell>
+          <mat-cell *matCellDef="let element" (click)="showDetails(element)">
+            {{ element.userName }}
+          </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="leaveType">
+          <mat-header-cell *matHeaderCellDef> Leave Type </mat-header-cell>
+          <mat-cell *matCellDef="let element">{{ element.leaveType }}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+          <mat-header-cell *matHeaderCellDef> Status </mat-header-cell>
+          <mat-cell *matCellDef="let element">{{ element.status }}</mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="showDetails(row)"></mat-row>
+      </mat-table>
+
+      <!-- Pagination Control -->
+      <mat-paginator [length]="totalItems" [pageSize]="pageSize" (page)="onPaginateChange($event)">
+      </mat-paginator>
+    </div>
+
+<!-- Details Section (Initially Hidden) -->
+<div *ngIf="selectedLeaveRequest" class="leave-details-container">
+  <!-- Title with Username -->
+  <h3>{{ selectedLeaveRequest.userName }}'s Leave Request</h3>
+
+  <div class="leave-details">
+    <!-- Left Column: Leave Type, Days Requested -->
+    <div class="left-column">
+      <p><strong>Leave Type:</strong> {{ selectedLeaveRequest.leaveType }}</p>
+      <p><strong>Days Requested:</strong> {{ calculateDays(selectedLeaveRequest.startDate, selectedLeaveRequest.endDate) }}</p>
+    </div>
+
+    <!-- Right Column: Start Date, End Date, Reason -->
+    <div class="right-column">
+      <p><strong>Start Date:</strong> {{ selectedLeaveRequest.startDate | date: 'shortDate' }}</p>
+      <p><strong>End Date:</strong> {{ selectedLeaveRequest.endDate | date: 'shortDate' }}</p>
+      <p><strong>Reason:</strong> {{ selectedLeaveRequest.leaveReason }}</p>
+    </div>
+  </div>
+
+  <!-- Comment Section -->
+  <mat-form-field appearance="fill" class="comment-form">
+    <mat-label>Comment</mat-label>
+    <textarea matInput [(ngModel)]="comment"></textarea>
+  </mat-form-field>
+
+  <!-- Approve/Reject Buttons -->
+  <div class="button-container">
+    <button mat-raised-button color="warn" (click)="rejectRequest()" class="reject-btn">Reject</button>
+    <button mat-raised-button color="primary" (click)="approveRequest()" class="approve-btn">Approve</button>
+  </div>
+</div>
+
+
   </mat-card-content>
 </mat-card>

@@ -87,6 +87,34 @@
     .leave-item {
       text-align: center;
     }
+
+    /* Status Highlight with a div around text */
+    .status-box {
+      display: inline-block; /* Keep the box just around the text */
+      padding: 5px 8px; /* Adjust padding to make the border fit snugly around text */
+      border-radius: 120px; /* Rounded corners */
+      text-align: center; /* Center the text */
+      font-weight: bold;
+    }
+
+    /* Specific colors */
+    .approved {
+      background-color: rgba(0, 128, 0, 0.1); /* Light green background */
+      color: darkgreen; /* Dark green text */
+
+    }
+
+    .pending {
+      background-color: rgba(255, 255, 0, 0.2); /* Light yellow background */
+      color: goldenrod; /* Darker yellow text */
+
+    }
+
+    .rejected {
+      background-color: rgba(255, 0, 0, 0.1); /* Light red background */
+      color: darkred; /* Dark red text */
+
+    }
   }
 
 

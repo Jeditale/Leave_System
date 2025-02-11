@@ -5,4 +5,15 @@ import { Component } from '@angular/core';
   templateUrl: './leave-request-form.component.html',
   styleUrls: ['./leave-request-form.component.scss']
 })
-export class LeaveRequestFormComponent {}
+export class LeaveRequestFormComponent {
+
+  leaveType: string = '';
+  startDateValue: Date | null = null;
+  endDateValue: Date | null = null;
+  leaveReason: string = '';
+
+  clearForm(form: any) {
+    form.resetForm();
+  }
+
+}

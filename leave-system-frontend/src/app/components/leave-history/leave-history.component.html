@@ -1,4 +1,4 @@
-<mat-card class="leave-history">
+<!-- <mat-card class="leave-history">
   <mat-card-header>
     <mat-card-title>Leave History</mat-card-title>
   </mat-card-header>
@@ -27,5 +27,23 @@
       <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
       <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
     </mat-table>
+
+
+
+    <div class="calendar-view">
+      <h3>Leave Calendar</h3>
+      <div class="calendar-container">
+        <mat-calendar
+        [dateClass]="dateClass"
+        #picker
+        panelClass="endDate"
+          [dateClass]="dateClass"></mat-calendar>
+      </div>
+      <div *ngIf="dates" class="leave-details">
+      </div>
+    </div>
+
+
+
   </mat-card-content>
-</mat-card>
+</mat-card> -->

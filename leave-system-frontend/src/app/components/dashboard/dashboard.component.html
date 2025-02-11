@@ -1,6 +1,6 @@
 <mat-card class="dashboard-card">
   <mat-card-header>
-    <mat-card-title>Dashboard</mat-card-title>
+
   </mat-card-header>
   <mat-card-content>
     <div class="stats-container">
@@ -28,8 +28,9 @@
     </div>
 
     <div class="recent-leaves">
-      <h3>Recent Leave Requests</h3>
+
       <div class="leave-list">
+        <h3>Recent Leave Requests</h3>
         <!-- Header Row -->
         <div class="leave-header">
           <span class="leave-header-item">Username</span>
@@ -43,16 +44,18 @@
           <span class="leave-item">{{ leave.userName }}</span>
           <span class="leave-item">{{ leave.leaveType }}</span>
           <span class="leave-item">{{ leave.leaveDays }} Days</span>
-          <span class="leave-item">{{ leave.status }}</span>
+          <div [ngClass]="{'approved': leave.status === 'Approved',
+          'pending': leave.status === 'Pending',
+          'rejected': leave.status === 'Rejected'}"
+class="status-box">
+{{ leave.status }}
+</div>
         </div>
       </div>
     </div>
 
 
 
-    <div class="calendar-view">
-      <h3>Leave Calendar</h3>
-      <mat-calendar></mat-calendar>
-    </div>
+
   </mat-card-content>
 </mat-card>

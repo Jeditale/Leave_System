@@ -57,4 +57,26 @@ public class LeaveRequestController {
     public void exportLeaveData() {
         leaveRequestService.exportLeaveDataToExcel();
     }
+
+
+    // Endpoint to get all pending leave requests
+    @GetMapping("/pending")
+    public List<LeaveRequest> getPendingRequests() {
+        return leaveRequestService.getPendingRequests();
+    }
+
+    // Endpoint to approve a leave request
+    @PostMapping("/approve/{id}")
+    public ResponseEntity<String> approveLeave(@PathVariable Long id, @RequestBody LeaveRequest leaveRequest) {
+        leaveRequestService.approveLeave(id, leaveRequest);
+        return ResponseEntity.ok("Leave approved successfully");
+    }
+
+    // Endpoint to reject a leave request
+    @PostMapping("/reject/{id}")
+    public ResponseEntity<String> rejectLeave(@PathVariable Long id, @RequestBody LeaveRequest leaveRequest) {
+        leaveRequestService.rejectLeave(id, leaveRequest);
+        return ResponseEntity.ok("Leave rejected successfully");
+    }
+
 }

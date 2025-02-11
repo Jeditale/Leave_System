@@ -1,5 +1,6 @@
 package jay.dev.services;
 
+import jakarta.persistence.EntityNotFoundException;
 import jay.dev.entities.LeaveBalance;
 import jay.dev.entities.LeaveRequest;
 import jay.dev.repositories.LeaveBalanceRepository;
@@ -57,5 +58,27 @@ public class LeaveRequestService {
 
     public void exportLeaveDataToExcel() {
         // Implement export functionality (using libraries like Apache POI)
+    }
+    // Get all pending leave requests
+    public List<LeaveRequest> getPendingRequests() {
+        return leaveRequestRepository.findByStatus("Pending");
+    }
+
+    // Approve a leave request
+    public void approveLeave(Long id, LeaveRequest leaveRequest) {
+        LeaveRequest request = leaveRequestRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("LeaveRequest with id " + id + " not found"));
+        request.setStatus("Approved");
+        request.setComment(leaveRequest.getComment()); // Store comment
+        leaveRequestRepository.save(request);
+    }
+
+    // Reject a leave request
+    public void rejectLeave(Long id, LeaveRequest leaveRequest) {
+        LeaveRequest request = leaveRequestRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("LeaveRequest with id " + id + " not found"));
+        request.setStatus("Rejected");
+        request.setComment(leaveRequest.getComment()); // Store comment
+        leaveRequestRepository.save(request);
     }
 }
