@@ -1,0 +1,38 @@
+<mat-card class="leave-request-form">
+  <mat-card-header>
+    <mat-card-title>Leave Request Form</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <form>
+      <mat-form-field appearance="fill">
+        <mat-label>Leave Type</mat-label>
+        <mat-select>
+          <mat-option value="vacation">Vacation</mat-option>
+          <mat-option value="sick">Sick</mat-option>
+          <mat-option value="personal">Personal</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Start Date</mat-label>
+        <input matInput [matDatepicker]="startDate" placeholder="Choose a start date">
+        <mat-datepicker-toggle matSuffix [for]="startDate"></mat-datepicker-toggle>
+        <mat-datepicker #startDate></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>End Date</mat-label>
+        <input matInput [matDatepicker]="endDate" placeholder="Choose an end date">
+        <mat-datepicker-toggle matSuffix [for]="endDate"></mat-datepicker-toggle>
+        <mat-datepicker #endDate></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Reason</mat-label>
+        <textarea matInput placeholder="Enter reason for leave"></textarea>
+      </mat-form-field>
+
+      <button mat-raised-button color="primary">Submit Request</button>
+    </form>
+  </mat-card-content>
+</mat-card>

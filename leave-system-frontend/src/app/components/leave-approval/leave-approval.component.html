@@ -1,0 +1,17 @@
+<mat-card class="leave-approval">
+  <mat-card-header>
+    <mat-card-title>Leave Requests Pending Approval</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <mat-list>
+      <mat-list-item *ngFor="let request of leaveRequests">
+        <div>
+          <h4>{{ request.userName }}</h4>
+          <p>{{ request.leaveType }} - {{ request.status }}</p>
+          <button mat-raised-button color="primary" (click)="approveLeave(request.id)">Approve</button>
+          <button mat-raised-button color="warn" (click)="rejectLeave(request.id)">Reject</button>
+        </div>
+      </mat-list-item>
+    </mat-list>
+  </mat-card-content>
+</mat-card>

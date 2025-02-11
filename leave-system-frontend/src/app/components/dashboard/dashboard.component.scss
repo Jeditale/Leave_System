@@ -1,0 +1,97 @@
+.dashboard-card {
+  .stats-container {
+    display: flex;
+    flex-direction: column; /* Stack items vertically */
+    gap: 20px; /* Space between each stat item */
+
+    .stat {
+      display: flex;
+      flex-direction: row; /* Align icon and text in a row */
+      align-items: center;
+      gap: 10px; /* Space between the icon and text */
+      border: 1px solid #e0e0e0; /* Light gray border */
+      padding: 15px;
+      border-radius: 8px;
+      background-color: #f9f9f9; /* Light background for each stat */
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Shadow effect */
+
+      /* Ensuring the icon size fits well */
+      mat-icon {
+        font-size: 40px; /* Increase the icon size */
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        /* Default icon color */
+        color: black; /* Set default color to black if no specific class */
+      }
+
+      .text-container {
+        display: flex;
+        flex-direction: column; /* Stack p on top of h3 */
+        justify-content: center;
+        align-items: flex-start;
+
+        p {
+          margin: 0;
+          font-size: 14px;
+          color: grey;
+        }
+
+        h3 {
+          font-size: 20px;
+          margin: 0;
+        }
+      }
+    }
+  }
+
+  .recent-leaves {
+    margin-top: 30px;
+
+    h3 {
+      font-size: 20px;
+      margin-bottom: 15px;
+    }
+
+    .leave-list {
+      border: 1px solid #e0e0e0; /* Border around the list */
+      border-radius: 8px;
+      padding: 10px;
+      background-color: #f9f9f9;
+    }
+
+    .leave-header {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr; /* Ensures each column gets equal space */
+      background-color: #f0f0f0; /* Gray background for header */
+      font-weight: bold;
+      color: #444;
+      border-bottom: 2px solid #e0e0e0; /* Border under header */
+      padding: 10px 0;
+    }
+
+    .leave-header-item {
+      text-align: center;
+    }
+
+    .leave-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr; /* Align rows the same way as headers */
+      padding: 10px 0;
+      border-bottom: 1px solid #e0e0e0; /* Border between rows */
+    }
+
+    .leave-item {
+      text-align: center;
+    }
+  }
+
+
+  mat-calendar {
+    margin-top: 20px;
+  }
+}
+

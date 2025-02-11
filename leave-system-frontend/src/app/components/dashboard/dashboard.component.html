@@ -1,0 +1,58 @@
+<mat-card class="dashboard-card">
+  <mat-card-header>
+    <mat-card-title>Dashboard</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <div class="stats-container">
+      <div class="stat">
+        <mat-icon style="-webkit-text-fill-color:rgb(0, 140, 255)">access_time</mat-icon>
+        <div class="text-container">
+          <p>Leave Balance</p>
+          <h3>{{ leaveBalance }} Days</h3>
+        </div>
+      </div>
+      <div class="stat">
+        <mat-icon style="-webkit-text-fill-color:rgb(0, 201, 27)">calendar_today</mat-icon> <!-- Changed to calendar_today -->
+        <div class="text-container">
+          <p>Leave Balance</p>
+          <h3>{{ leaveBalance }} Days</h3>
+        </div>
+      </div>
+      <div class="stat">
+        <mat-icon style="-webkit-text-fill-color:rgb(140, 0, 255)">description</mat-icon>
+        <div class="text-container">
+          <p>Leave Taken This Year</p>
+          <h3>{{ usedLeaveThisYear }} Days</h3>
+        </div>
+      </div>
+    </div>
+
+    <div class="recent-leaves">
+      <h3>Recent Leave Requests</h3>
+      <div class="leave-list">
+        <!-- Header Row -->
+        <div class="leave-header">
+          <span class="leave-header-item">Username</span>
+          <span class="leave-header-item">Leave Type</span>
+          <span class="leave-header-item">Leave Days</span>
+          <span class="leave-header-item">Status</span>
+        </div>
+
+        <!-- Leave Request Rows -->
+        <div *ngFor="let leave of recentLeaves" class="leave-row">
+          <span class="leave-item">{{ leave.userName }}</span>
+          <span class="leave-item">{{ leave.leaveType }}</span>
+          <span class="leave-item">{{ leave.leaveDays }} Days</span>
+          <span class="leave-item">{{ leave.status }}</span>
+        </div>
+      </div>
+    </div>
+
+
+
+    <div class="calendar-view">
+      <h3>Leave Calendar</h3>
+      <mat-calendar></mat-calendar>
+    </div>
+  </mat-card-content>
+</mat-card>
