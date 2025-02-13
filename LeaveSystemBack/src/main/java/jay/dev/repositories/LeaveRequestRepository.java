@@ -14,5 +14,8 @@ public interface LeaveRequestRepository extends JpaRepository<LeaveRequest, Long
     long countByUserIdAndStatus(Long userId, String status);
     long countByUserIdAndStatusAndStartDateAfter(Long userId, String status, LocalDate startDate);
     long countByStatusAndUserId(String status, Long userId);
+
+    List<LeaveRequest> findByStartDateBetween(LocalDate startDate, LocalDate endDate);
+
 }
 

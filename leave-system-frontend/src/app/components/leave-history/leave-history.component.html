@@ -1,27 +1,78 @@
-<!-- <mat-card class="leave-history">
+<mat-card>
   <mat-card-header>
-    <mat-card-title>Leave History</mat-card-title>
+    <mat-card-title>
+      <strong>สถิติการลาประจำเดือน</strong>
+    </mat-card-title>
+    <mat-card-subtitle>ข้อมูลการลาของพนักงานทั้งหมด</mat-card-subtitle>
+    <button mat-raised-button color="primary" (click)="exportToExcel()">
+      Export to Excel
+    </button>
   </mat-card-header>
+
   <mat-card-content>
-    <mat-table [dataSource]="leaveHistory">
+    <!-- Filters -->
+    <div class="filter-container">
+      <mat-form-field appearance="fill">
+        <mat-label>เดือน/ปี</mat-label>
+        <input matInput [matDatepicker]="monthPicker" [(ngModel)]="selectedMonthYear" readonly />
+        <mat-datepicker-toggle matSuffix [for]="monthPicker"></mat-datepicker-toggle>
+        <mat-datepicker #monthPicker startView="multi-year" (yearSelected)="chosenYearHandler($event)" (monthSelected)="chosenMonthHandler($event, monthPicker)">
+        </mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>แผนก</mat-label>
+        <mat-select [(ngModel)]="selectedDepartment" (selectionChange)="filterData()">
+          <mat-option *ngFor="let dept of departments" [value]="dept">{{ dept }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>ประเภทการลา</mat-label>
+        <mat-select [(ngModel)]="selectedLeaveType" (selectionChange)="filterData()">
+          <mat-option *ngFor="let type of leaveTypes" [value]="type">{{ type }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>สถานะ</mat-label>
+        <mat-select [(ngModel)]="selectedStatus" (selectionChange)="filterData()">
+          <mat-option *ngFor="let status of statuses" [value]="status">{{ status }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <!-- Leave Statistics Chart -->
+    <ngx-charts-bar-vertical
+    [view]="[2000, 300]"
+      [results]="leaveStatsData"
+      [scheme]="colorScheme"
+      [xAxis]="true"
+      [yAxis]="true"
+      [legend]="true"
+      [showDataLabel]="true"
+      [animations]="true">
+    </ngx-charts-bar-vertical>
+
+    <!-- Leave History Table -->
+    <mat-table [dataSource]="filteredLeaveData">
       <ng-container matColumnDef="userName">
-        <mat-header-cell *matHeaderCellDef>User Name</mat-header-cell>
-        <mat-cell *matCellDef="let leave">{{ leave.userName }}</mat-cell>
+        <mat-header-cell *matHeaderCellDef>พนักงาน</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{ element.userName }}</mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="leaveType">
-        <mat-header-cell *matHeaderCellDef>Leave Type</mat-header-cell>
-        <mat-cell *matCellDef="let leave">{{ leave.leaveType }}</mat-cell>
+        <mat-header-cell *matHeaderCellDef>ประเภทการลา</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{ element.leaveType }}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="daysTaken">
+        <mat-header-cell *matHeaderCellDef>วันลาที่ใช้</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{ element.daysTaken }}</mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="status">
-        <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
-        <mat-cell *matCellDef="let leave">{{ leave.status }}</mat-cell>
-      </ng-container>
-
-      <ng-container matColumnDef="details">
-        <mat-header-cell *matHeaderCellDef>Details</mat-header-cell>
-        <mat-cell *matCellDef="let leave"><button mat-button>View</button></mat-cell>
+        <mat-header-cell *matHeaderCellDef>สถานะ</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{ element.status }}</mat-cell>
       </ng-container>
 
       <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
@@ -29,21 +80,10 @@
     </mat-table>
 
 
-
-    <div class="calendar-view">
-      <h3>Leave Calendar</h3>
-      <div class="calendar-container">
-        <mat-calendar
-        [dateClass]="dateClass"
-        #picker
-        panelClass="endDate"
-          [dateClass]="dateClass"></mat-calendar>
-      </div>
-      <div *ngIf="dates" class="leave-details">
-      </div>
-    </div>
+    <mat-paginator [length]="totalItems" [pageSize]="pageSize" (page)="onPaginateChange($event)">
+    </mat-paginator>
 
 
-
+e
   </mat-card-content>
-</mat-card> -->
+</mat-card>

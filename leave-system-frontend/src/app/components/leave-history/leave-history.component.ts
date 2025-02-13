@@ -1,82 +1,122 @@
-import { Component, Renderer2, AfterViewInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { MatDatepicker } from '@angular/material/datepicker';
+import { Color, ScaleType } from '@swimlane/ngx-charts';
 
 @Component({
   selector: 'app-leave-history',
   templateUrl: './leave-history.component.html',
   styleUrls: ['./leave-history.component.scss']
 })
-export class LeaveHistoryComponent implements AfterViewInit {
-  // displayedColumns: string[] = ['userName', 'leaveType', 'status', 'details'];
-  // leaveHistory = [
-  //   { userName: 'John Doe', leaveType: 'Sick', status: 'Approved' },
-  //   { userName: 'Jane Smith', leaveType: 'Vacation', status: 'Pending' }
-  // ];
-
-  // dates = [
-  //   { date: "2025-02-01", text: "Special Day 1" ,username:"jay",leaveType:"sick-leave"},
-  //   { date: "2025-02-20", text: "Special Day 2" ,username:"jay",leaveType:"sick-leave"}
-  // ];
-
-  // Today = [
-  //   { date: this.dateToString(new Date()), text: "Today" }
-  // ];
-
-  // constructor(private renderer: Renderer2) {}
-
-  ngAfterViewInit() {
-    // this.streamOpened();
+export class LeaveHistoryComponent {
+  ngOnInit() {
+    this.filterData();
   }
 
-  // dateClass = (d: Date) => {
-  //   const dateSearch = this.dateToString(d);
-  //   if (this.Today.find(f => f.date === dateSearch)) {
-  //     return "todays_class";
-  //   } else if (this.dates.find(f => f.date === dateSearch)) {
-  //     return "example-custom-date-class";
-  //   } else {
-  //     return "normal";
-  //   }
-  // };
+  displayedColumns: string[] = ['userName', 'leaveType', 'daysTaken', 'status'];
+  leaveData: any[] = [
+    // Example data for leaveData
+    { userName: 'John Doe', leaveType: 'Sick', status: 'Approved', department: 'HR', daysTaken: 3 },
+    { userName: 'Jane Smith', leaveType: 'Vacation', status: 'Pending', department: 'IT', daysTaken: 2 },
+    // Add more data as needed
+  ];
+  filteredLeaveData = [...this.leaveData];
+  totalItems = this.leaveData.length;
+  pageSize = 5;
 
-  // displayMonth() {
-  //   setTimeout(() => {
-  //     let x = document.querySelectorAll(".mat-calendar-body-cell");
-  //     x.forEach(y => {
-  //       const ariaLabel = y.getAttribute("aria-label");
-  //       if (ariaLabel) {
-  //         const dateSearch = this.dateToString(new Date(ariaLabel));
-  //         const data = this.dates.find(f => f.date === dateSearch);
-  //         const data_today = this.Today.find(f => f.date === dateSearch);
+  selectedMonthYear: Date = new Date();
+  selectedDepartment: string = 'All';
+  selectedLeaveType: string = 'All';
+  selectedStatus: string = 'Approved';
+  chosenYear: number | null = null;
 
-  //         if (data) y.setAttribute("aria-label", data.text);
-  //         if (data_today) y.setAttribute("aria-label", data_today.text);
-  //       }
-  //     });
-  //   });
-  // }
+  departments = ['HR', 'Finance', 'IT', 'Operations', 'All'];
+  leaveTypes = ['Sick', 'Vacation', 'Personal', 'Maternity', 'All'];
+  statuses = ['Approved', 'Pending', 'Rejected', 'All'];
 
-  // streamOpened() {
-  //   setTimeout(() => {
-  //     let buttons = document.querySelectorAll("mat-calendar .mat-icon-button");
+  // Chart Data
+  leaveStatsData = [
+    { name: 'Sick Leave', value: 10 },
+    { name: 'Vacation Leave', value: 7 },
+    { name: 'Personal Leave', value: 4 }
+  ];
 
-  //     buttons.forEach(btn =>
-  //       this.renderer.listen(btn, "click", () => {
-  //         setTimeout(() => {
-  //           this.displayMonth();
-  //         });
-  //       })
-  //     );
-  //     this.displayMonth();
-  //   });
-  // }
+  colorScheme: Color = {
+    domain: ['#FF5733', '#33FF57', '#3357FF'], // Define colors
+    group: ScaleType.Ordinal,
+    selectable: true,
+    name: 'customScheme'
+  };
 
-  // dateToString(date: Date): string {
-  //   return (
-  //     date.getFullYear() +
-  //     "-" +
-  //     ("0" + (date.getMonth() + 1)).slice(-2) +
-  //     "-" +
-  //     ("0" + date.getDate()).slice(-2)
-  //   );
-  // }
+  // Method to set the selected month/year
+  setMonthYear(event: Date, datepicker: any) {
+    this.selectedMonthYear = event;
+    datepicker.close();
+  }
+
+  // Method to handle pagination change (if needed)
+  onPaginateChange(event: any) {
+    console.log('Page Change:', event);
+  }
+
+  // Handles year selection
+  chosenYearHandler(normalizedYear: Date) {
+    this.chosenYear = normalizedYear.getFullYear(); // Store selected year
+    console.log(this.chosenYear);
+  }
+
+  // Handles month selection
+  chosenMonthHandler(normalizedMonth: Date, datepicker: MatDatepicker<Date>) {
+    if (this.chosenYear !== null) {
+      // Create new Date with chosen year and selected month
+      this.selectedMonthYear = new Date(this.chosenYear, normalizedMonth.getMonth());
+    } else {
+      // Handle case when year is not yet chosen
+      this.selectedMonthYear = new Date(normalizedMonth.getFullYear(), normalizedMonth.getMonth());
+    }
+
+    datepicker.close(); // Close the picker after selection
+    console.log(this.selectedMonthYear); // Output selected month/year
+  }
+
+  // Filter data based on selections (Leave Type, Status, Department)
+  filterData() {
+    this.filteredLeaveData = this.leaveData.filter(leave =>
+      (this.selectedLeaveType === 'All' || leave.leaveType === this.selectedLeaveType) &&
+      (this.selectedStatus === 'All' || leave.status === this.selectedStatus) &&
+      (this.selectedDepartment === 'All' || leave.department === this.selectedDepartment)
+    );
+
+    // Update the chart data after filtering
+    this.updateChartData();
+  }
+
+  // Update chart data based on filtered leave data
+  updateChartData() {
+  const leaveStats: { [key in 'Sick' | 'Vacation' | 'Personal' | 'Maternity']: number } = {
+    'Sick': 0,
+    'Vacation': 0,
+    'Personal': 0,
+    'Maternity': 0
+  };
+
+    // Count leave types from filtered data
+    this.filteredLeaveData.forEach(leave => {
+      if (leaveStats[leave.leaveType as 'Sick' | 'Vacation' | 'Personal' | 'Maternity'] !== undefined) {
+        leaveStats[leave.leaveType as 'Sick' | 'Vacation' | 'Personal' | 'Maternity']++;
+      }
+    });
+
+    // Prepare chart data
+    this.leaveStatsData = [
+      { name: 'Sick Leave', value: leaveStats['Sick'] },
+      { name: 'Vacation Leave', value: leaveStats['Vacation'] },
+      { name: 'Personal Leave', value: leaveStats['Personal'] },
+      { name: 'Maternity Leave', value: leaveStats['Maternity'] }
+    ];
+  }
+
+
+  exportToExcel() {
+    // Implement later
+  }
 }

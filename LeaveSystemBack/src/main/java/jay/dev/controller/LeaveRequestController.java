@@ -7,7 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/leave-requests")
@@ -53,11 +56,6 @@ public class LeaveRequestController {
         return ResponseEntity.ok(leaveRequestService.getAllEmployeeLeavesForCalendar());
     }
 
-    @GetMapping("/export")
-    public void exportLeaveData() {
-        leaveRequestService.exportLeaveDataToExcel();
-    }
-
 
     // Endpoint to get all pending leave requests
     @GetMapping("/pending")
@@ -77,6 +75,28 @@ public class LeaveRequestController {
     public ResponseEntity<String> rejectLeave(@PathVariable Long id, @RequestBody LeaveRequest leaveRequest) {
         leaveRequestService.rejectLeave(id, leaveRequest);
         return ResponseEntity.ok("Leave rejected successfully");
+    }
+
+    @GetMapping("/stats/{year}/{month}")
+    public ResponseEntity<Map<String, Integer>> getLeaveStats(
+            @PathVariable int year, @PathVariable int month) {
+        Map<String, Integer> stats = leaveRequestService.getLeaveStats(year, month);
+        return ResponseEntity.ok(stats);
+    }
+
+    @GetMapping("/export/{year}/{month}")
+    public ResponseEntity<String> exportLeaveDataToExcel(
+            @PathVariable int year, @PathVariable int month) {
+        try {
+            String base64Excel = leaveRequestService.exportLeaveDataToExcel(year, month);
+            return ResponseEntity.ok(base64Excel);
+        } catch (IOException e) {
+            return ResponseEntity.status(500).body("Error generating Excel file");
+        }
+    }
+    @GetMapping("/user/{userId}")
+    public List<LeaveRequest> getLeavesByUserId(@PathVariable Long userId) {
+        return leaveRequestService.getLeaveRequestsByUserId(userId);
     }
 
 }

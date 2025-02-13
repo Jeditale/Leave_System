@@ -9,7 +9,7 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { LeaveRequestFormComponent } from './components/leave-request-form/leave-request-form.component';
 import { LeaveApprovalComponent } from './components/leave-approval/leave-approval.component';
 import { LeaveHistoryComponent } from './components/leave-history/leave-history.component';
-import { CalendarViewComponent } from './components/calendar-view/calendar-view.component';
+
 import { EffectsModule } from '@ngrx/effects';
 
 import { MatButtonModule } from '@angular/material/button';
@@ -27,6 +27,7 @@ import { NativeDateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, DateAdapter } fro
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
 
 export const MY_DATE_FORMATS = {
   display: {
@@ -44,7 +45,6 @@ export const MY_DATE_FORMATS = {
     LeaveRequestFormComponent,
     LeaveApprovalComponent,
     LeaveHistoryComponent,
-    CalendarViewComponent
   ],
   imports: [
     BrowserModule,
@@ -65,7 +65,9 @@ export const MY_DATE_FORMATS = {
     FormsModule,
     ReactiveFormsModule,
     MatDialogModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    NgxChartsModule
+
 
   ],
   providers: [

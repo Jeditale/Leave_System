@@ -1,97 +1,46 @@
-.leave-history {
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 20px;
+.title {
+  font-weight: bold;
+  font-size: 20px;
 }
 
-*{
-  color: rgba(0, 0, 0, 0.6);
-  font-weight: 600;
-
+.export-btn {
+  float: right;
+  background-color: blue;
+  color: white;
 }
 
-
-::ng-deep.example-custom-date-class::after {
-  counter-increment: section;
-  content:attr(aria-label);
-  border-radius: .25rem;
-  background: #ff4081;
-  color: white !important;
-    height: 1rem;
-    line-height:1rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  padding: 0.2rem;
-  margin:0.05rem;
-
-  display:block;
-position: absolute;
-bottom: 0;
-left: 0;
-right: 0;
+.filter-container {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
 }
 
-::ng-deep.example-custom-date-class:hover::after {
-  content: attr(aria-label);
-  position: absolute;
-  left: 0;
-  top: 24px;
-  min-width: 100px;
-  max-width: 200px;
-  border-radius: 10px;
-  padding: 12px;
-  background: #ff4081;
-  color: white !important;
-  font-size: 14px;
-  z-index: 1;
+.statistics-container {
+  margin-top: 20px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9;
 }
 
-
-::ng-deep.todays_class::after {
-  counter-increment: section;
-  content:attr(aria-label);
-  border-radius: .25rem;
-  background: #1e88e5;
-  color: white !important;
-    height: 1rem;
-    line-height:1rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  padding: 0.2rem;
-  margin:0.05rem;
-  display:block;
-position: absolute;
-bottom: 0;
-left: 0;
-right: 0;
+.details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+/* CSS to hide days and show only months and years in the Datepicker */
+.month-picker .mat-calendar-body-cell-content {
+  display: none; /* Hides the days */
 }
 
-::ng-deep.todays_class:hover::after {
-  content: attr(aria-label);
-  position: absolute;
-  left: 0;
-  top: 24px;
-  min-width: 100px;
-  max-width: 200px;
-  border-radius: 10px;
-  padding: 12px;
-  background: #1e88e5;
-  color: white !important;
-  font-size: 14px;
-  z-index: 1;
+.month-picker .mat-calendar-header {
+  display: none; /* Hides the day name header */
 }
 
-::ng-deep.normal>.mat-calendar-body-cell-content,
-::ng-deep.example-custom-date-class>.mat-calendar-body-cell-content,::ng-deep.todays_class>.mat-calendar-body-cell-content
-
-{
-  padding-bottom: 1.2rem;
-border-radius:50% !important;
-background-color: transparent !important;
-border: none !important;
+.month-picker .mat-calendar-month-view {
+  display: block; /* Ensures month view is displayed */
 }
 
-
-
+.month-picker .mat-calendar-year-view {
+  display: block; /* Ensures year view is displayed */
+}
