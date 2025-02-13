@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { MatDatepicker } from '@angular/material/datepicker';
+import { Component, OnInit } from '@angular/core';
+import { LeaveRequestService } from '../../services/leave.service';
 import { Color, ScaleType } from '@swimlane/ngx-charts';
 
 @Component({
@@ -7,39 +7,26 @@ import { Color, ScaleType } from '@swimlane/ngx-charts';
   templateUrl: './leave-history.component.html',
   styleUrls: ['./leave-history.component.scss']
 })
-export class LeaveHistoryComponent {
-  ngOnInit() {
-    this.filterData();
-  }
-
+export class LeaveHistoryComponent implements OnInit {
+  // Table configuration
   displayedColumns: string[] = ['userName', 'leaveType', 'daysTaken', 'status'];
-  leaveData: any[] = [
-    // Example data for leaveData
-    { userName: 'John Doe', leaveType: 'Sick', status: 'Approved', department: 'HR', daysTaken: 3 },
-    { userName: 'Jane Smith', leaveType: 'Vacation', status: 'Pending', department: 'IT', daysTaken: 2 },
-    // Add more data as needed
-  ];
-  filteredLeaveData = [...this.leaveData];
-  totalItems = this.leaveData.length;
-  pageSize = 5;
+  leaveData: any[] = [];
+  filteredLeaveData: any[] = [];
+  totalItems: number = 0;
+  pageSize: number = 5;
 
+  // Filters
   selectedMonthYear: Date = new Date();
   selectedDepartment: string = 'All';
   selectedLeaveType: string = 'All';
-  selectedStatus: string = 'Approved';
+  selectedStatus: string = 'All';
   chosenYear: number | null = null;
-
   departments = ['HR', 'Finance', 'IT', 'Operations', 'All'];
   leaveTypes = ['Sick', 'Vacation', 'Personal', 'Maternity', 'All'];
   statuses = ['Approved', 'Pending', 'Rejected', 'All'];
 
   // Chart Data
-  leaveStatsData = [
-    { name: 'Sick Leave', value: 10 },
-    { name: 'Vacation Leave', value: 7 },
-    { name: 'Personal Leave', value: 4 }
-  ];
-
+  leaveStatsData: any[] = [];
   colorScheme: Color = {
     domain: ['#FF5733', '#33FF57', '#3357FF'], // Define colors
     group: ScaleType.Ordinal,
@@ -47,76 +34,72 @@ export class LeaveHistoryComponent {
     name: 'customScheme'
   };
 
-  // Method to set the selected month/year
-  setMonthYear(event: Date, datepicker: any) {
-    this.selectedMonthYear = event;
-    datepicker.close();
+  // Selected leave request for details view
+  selectedLeaveRequest: any = null;
+
+  constructor(private leaveService: LeaveRequestService) {}
+
+  ngOnInit(): void {
+    this.fetchLeaveHistory();
+    this.fetchLeaveStats();
   }
 
-  // Method to handle pagination change (if needed)
-  onPaginateChange(event: any) {
-    console.log('Page Change:', event);
+  // Fetch all leave history (from backend)
+  fetchLeaveHistory() {
+    this.leaveService.getLeaveRequests().subscribe(data => {
+      this.leaveData = data;
+      this.filteredLeaveData = [...this.leaveData];
+      this.totalItems = this.leaveData.length;
+    });
   }
 
-  // Handles year selection
+  // Fetch leave statistics for the selected month/year
+  fetchLeaveStats() {
+    const year = this.selectedMonthYear.getFullYear();
+    const month = this.selectedMonthYear.getMonth() + 1; // API expects 1-indexed month
+    this.leaveService.getLeaveStats(year, month).subscribe(stats => {
+      this.leaveStatsData = stats;
+    });
+  }
+
+  // For month/year picker
   chosenYearHandler(normalizedYear: Date) {
-    this.chosenYear = normalizedYear.getFullYear(); // Store selected year
-    console.log(this.chosenYear);
+    this.chosenYear = normalizedYear.getFullYear();
   }
 
-  // Handles month selection
-  chosenMonthHandler(normalizedMonth: Date, datepicker: MatDatepicker<Date>) {
+  chosenMonthHandler(normalizedMonth: Date, datepicker: any) {
     if (this.chosenYear !== null) {
-      // Create new Date with chosen year and selected month
       this.selectedMonthYear = new Date(this.chosenYear, normalizedMonth.getMonth());
     } else {
-      // Handle case when year is not yet chosen
       this.selectedMonthYear = new Date(normalizedMonth.getFullYear(), normalizedMonth.getMonth());
     }
-
-    datepicker.close(); // Close the picker after selection
-    console.log(this.selectedMonthYear); // Output selected month/year
+    datepicker.close();
+    this.fetchLeaveStats(); // Refresh chart when month/year changes
   }
 
-  // Filter data based on selections (Leave Type, Status, Department)
+  // Filter table data based on selected filters
   filterData() {
     this.filteredLeaveData = this.leaveData.filter(leave =>
       (this.selectedLeaveType === 'All' || leave.leaveType === this.selectedLeaveType) &&
       (this.selectedStatus === 'All' || leave.status === this.selectedStatus) &&
       (this.selectedDepartment === 'All' || leave.department === this.selectedDepartment)
     );
-
-    // Update the chart data after filtering
-    this.updateChartData();
+    this.totalItems = this.filteredLeaveData.length;
   }
 
-  // Update chart data based on filtered leave data
-  updateChartData() {
-  const leaveStats: { [key in 'Sick' | 'Vacation' | 'Personal' | 'Maternity']: number } = {
-    'Sick': 0,
-    'Vacation': 0,
-    'Personal': 0,
-    'Maternity': 0
-  };
-
-    // Count leave types from filtered data
-    this.filteredLeaveData.forEach(leave => {
-      if (leaveStats[leave.leaveType as 'Sick' | 'Vacation' | 'Personal' | 'Maternity'] !== undefined) {
-        leaveStats[leave.leaveType as 'Sick' | 'Vacation' | 'Personal' | 'Maternity']++;
-      }
-    });
-
-    // Prepare chart data
-    this.leaveStatsData = [
-      { name: 'Sick Leave', value: leaveStats['Sick'] },
-      { name: 'Vacation Leave', value: leaveStats['Vacation'] },
-      { name: 'Personal Leave', value: leaveStats['Personal'] },
-      { name: 'Maternity Leave', value: leaveStats['Maternity'] }
-    ];
+  // Handle pagination (if needed)
+  onPaginateChange(event: any) {
+    // For example, if you want to handle pagination manually
+    console.log('Page Change:', event);
   }
-
-
   exportToExcel() {
-    // Implement later
+    const year = this.selectedMonthYear.getFullYear();
+    const month = this.selectedMonthYear.getMonth() + 1;
+    this.leaveService.exportLeaveData(year, month).subscribe(base64 => {
+      const link = document.createElement('a');
+      link.href = `data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,${base64}`;
+      link.download = `Leave_History_${year}_${month}.xlsx`;
+      link.click();
+    });
   }
 }

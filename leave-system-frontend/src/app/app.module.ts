@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule, provideClientHydration } from '@angular/platform-browser';
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
@@ -9,9 +8,7 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { LeaveRequestFormComponent } from './components/leave-request-form/leave-request-form.component';
 import { LeaveApprovalComponent } from './components/leave-approval/leave-approval.component';
 import { LeaveHistoryComponent } from './components/leave-history/leave-history.component';
-
 import { EffectsModule } from '@ngrx/effects';
-
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -28,6 +25,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { leaveReducer } from './store/leave.reducer';
+import { LeaveEffects } from './store/leave.effects';
+import { HttpClientModule, provideHttpClient, withFetch } from '@angular/common/http';
+import { LeaveRequestService } from './services/leave.service';
 
 export const MY_DATE_FORMATS = {
   display: {
@@ -66,7 +67,12 @@ export const MY_DATE_FORMATS = {
     ReactiveFormsModule,
     MatDialogModule,
     MatPaginatorModule,
-    NgxChartsModule
+    NgxChartsModule,
+    StoreModule.forRoot({ leave: leaveReducer }),
+    EffectsModule.forRoot([LeaveEffects]),
+    HttpClientModule,
+    EffectsModule.forFeature([LeaveEffects])
+
 
 
   ],
@@ -75,7 +81,9 @@ export const MY_DATE_FORMATS = {
     { provide: MAT_DATE_LOCALE, useValue: 'en-GB' },
     { provide: DateAdapter, useClass: NativeDateAdapter },
     provideClientHydration(),
-    provideAnimationsAsync()
+    provideAnimationsAsync(),
+    provideHttpClient(withFetch()),
+    LeaveRequestService
   ],
   bootstrap: [AppComponent]
 })

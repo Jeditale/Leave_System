@@ -1,27 +1,25 @@
 <mat-card class="leave-request-form">
   <mat-card-header>
     <mat-card-title>
-      <mat-icon class="title-icon" style="-webkit-text-fill-color:rgb(0, 119, 255)">event</mat-icon>
+      <mat-icon class="title-icon">event</mat-icon>
       <strong>Leave Request Form</strong>
     </mat-card-title>
   </mat-card-header>
-
   <mat-card-content>
     <form #leaveForm="ngForm">
-      <!-- Leave Type (Full Width) -->
       <p class="input-description">Select the type of leave</p>
       <mat-form-field appearance="fill" class="full-width">
         <mat-label>Leave Type</mat-label>
         <mat-select name="leaveType" [(ngModel)]="leaveType">
-          <mat-option value="vacation">Vacation</mat-option>
-          <mat-option value="sick">Sick</mat-option>
-          <mat-option value="personal">Personal</mat-option>
+          <mat-option value="Sick">Sick</mat-option>
+          <mat-option value="Vacation">Vacation</mat-option>
+          <mat-option value="Personal">Personal</mat-option>
+          <mat-option value="Maternity">Maternity</mat-option>
         </mat-select>
       </mat-form-field>
 
-      <!-- Start & End Date (Larger Width) -->
       <div class="date-container">
-        <div class="date-field wide">
+        <div class="date-field">
           <p class="input-description">Choose the start date</p>
           <mat-form-field appearance="fill">
             <mat-label>Start Date</mat-label>
@@ -31,7 +29,7 @@
           </mat-form-field>
         </div>
 
-        <div class="date-field wide">
+        <div class="date-field">
           <p class="input-description">Choose the end date</p>
           <mat-form-field appearance="fill">
             <mat-label>End Date</mat-label>
@@ -42,17 +40,15 @@
         </div>
       </div>
 
-      <!-- Reason (Full Width) -->
       <p class="input-description">Provide a reason for your leave request</p>
       <mat-form-field appearance="fill" class="full-width">
         <mat-label>Reason</mat-label>
         <textarea matInput placeholder="Enter reason for leave" [(ngModel)]="leaveReason" name="leaveReason"></textarea>
       </mat-form-field>
 
-      <!-- Buttons (Right-aligned) -->
       <div class="button-container">
         <button mat-raised-button color="warn" type="button" (click)="clearForm(leaveForm)">Cancel</button>
-        <button mat-raised-button color="primary">Submit Request</button>
+        <button mat-raised-button color="primary" type="button" (click)="submitRequest()">Submit Request</button>
       </div>
     </form>
   </mat-card-content>
