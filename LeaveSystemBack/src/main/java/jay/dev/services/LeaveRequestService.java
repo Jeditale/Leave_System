@@ -1,31 +1,22 @@
 package jay.dev.services;
-
 import jakarta.persistence.EntityNotFoundException;
-import jay.dev.entities.LeaveBalance;
 import jay.dev.entities.LeaveRequest;
-import jay.dev.repositories.LeaveBalanceRepository;
 import jay.dev.repositories.LeaveRequestRepository;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class LeaveRequestService {
 
     @Autowired
     private LeaveRequestRepository leaveRequestRepository;
-
-//    @Autowired
-//    private LeaveBalanceRepository leaveBalanceRepository;
 
     public LeaveRequest createLeaveRequest(LeaveRequest leaveRequest) {
         return leaveRequestRepository.save(leaveRequest);
@@ -42,13 +33,8 @@ public class LeaveRequestService {
             leaveRequest.setStatus(status);
             return leaveRequestRepository.save(leaveRequest);
         }
-        return null; // Or throw exception
+        return null;
     }
-
-//    public LeaveBalance getLeaveBalance(Long userId) {
-//        return leaveBalanceRepository.findByUserId(userId)
-//                .orElseThrow(() -> new RuntimeException("Leave balance not found"));
-//    }
 
     public long countPendingLeaveRequests(Long userId) {
         return leaveRequestRepository.countByStatusAndUserId("Pending", userId);
@@ -62,9 +48,6 @@ public class LeaveRequestService {
         return leaveRequestRepository.findAll();
     }
 
-    public void exportLeaveDataToExcel() {
-        // Implement export functionality (using libraries like Apache POI)
-    }
     // Get all pending leave requests
     public List<LeaveRequest> getPendingRequests() {
         return leaveRequestRepository.findByStatus("รออนุมัติ");

@@ -1,5 +1,4 @@
 package jay.dev.entities;
-
 import lombok.*;
 import jakarta.persistence.*;
 import java.time.LocalDate;
@@ -10,17 +9,13 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class LeaveRequest {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @ManyToOne
     private User user;
-
     @ManyToOne
     private LeaveType leaveType;
-
     private LocalDate startDate;
     private LocalDate endDate;
     private String status;

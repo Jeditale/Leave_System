@@ -1,5 +1,4 @@
 package jay.dev.controller;
-
 import jay.dev.entities.LeaveBalance;
 import jay.dev.entities.LeaveRequest;
 import jay.dev.services.LeaveBalanceService;
@@ -7,16 +6,13 @@ import jay.dev.services.LeaveRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/leave-requests")
 public class LeaveRequestController {
-
     @Autowired
     private LeaveRequestService leaveRequestService;
     @Autowired
@@ -49,8 +45,6 @@ public class LeaveRequestController {
         return ResponseEntity.ok(count);
     }
 
-
-
     @GetMapping("/count-pending/{userId}")
     public ResponseEntity<Long> countPendingLeaveRequests(@PathVariable Long userId) {
         return ResponseEntity.ok(leaveRequestService.countPendingLeaveRequests(userId));
@@ -66,7 +60,6 @@ public class LeaveRequestController {
         return ResponseEntity.ok(leaveRequestService.getAllEmployeeLeavesForCalendar());
     }
 
-
     // Endpoint to get all pending leave requests
     @GetMapping("/pending")
     public List<LeaveRequest> getPendingRequests() {
@@ -77,7 +70,7 @@ public class LeaveRequestController {
     @PostMapping("/approve/{id}")
     public ResponseEntity<String> approveLeave(@PathVariable Long id, @RequestBody LeaveRequest leaveRequest) {
         leaveRequestService.approveLeave(id, leaveRequest);
-//        return ResponseEntity.ok("Leave approved successfully");
+    //return ResponseEntity.ok("Leave approved successfully");
         return null;
     }
 

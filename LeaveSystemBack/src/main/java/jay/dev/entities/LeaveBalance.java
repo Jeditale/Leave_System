@@ -1,5 +1,4 @@
 package jay.dev.entities;
-
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -13,13 +12,10 @@ public class LeaveBalance {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @ManyToOne
     private User user;
-
     @ManyToOne
     private LeaveType leaveType;
-
     private Integer year;
     private Integer remainingDays;
 }
