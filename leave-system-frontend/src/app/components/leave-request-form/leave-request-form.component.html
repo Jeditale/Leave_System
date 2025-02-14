@@ -2,53 +2,53 @@
   <mat-card-header>
     <mat-card-title>
       <mat-icon class="title-icon">event</mat-icon>
-      <strong>Leave Request Form</strong>
+      <strong>แบบฟอร์มขอลา</strong>
     </mat-card-title>
   </mat-card-header>
   <mat-card-content>
     <form #leaveForm="ngForm">
-      <p class="input-description">Select the type of leave</p>
+      <p class="input-description">เลือกประเภทการลา</p>
       <mat-form-field appearance="fill" class="full-width">
-        <mat-label>Leave Type</mat-label>
+        <mat-label>ประเภทการลา</mat-label>
         <mat-select name="leaveType" [(ngModel)]="leaveType">
-          <mat-option value="Sick">Sick</mat-option>
-          <mat-option value="Vacation">Vacation</mat-option>
-          <mat-option value="Personal">Personal</mat-option>
-          <mat-option value="Maternity">Maternity</mat-option>
+          <mat-option value=5>ลาป่วย</mat-option>
+          <mat-option value=6>ลาพักร้อน</mat-option>
+          <mat-option value=7>ลากิจ</mat-option>
+          <mat-option value=8>ลาคลอด</mat-option>
         </mat-select>
       </mat-form-field>
 
       <div class="date-container">
         <div class="date-field">
-          <p class="input-description">Choose the start date</p>
+          <p class="input-description">เลือกวันที่เริ่มต้น</p>
           <mat-form-field appearance="fill">
-            <mat-label>Start Date</mat-label>
-            <input matInput [matDatepicker]="startDate" placeholder="Start Date" [(ngModel)]="startDateValue" name="startDate">
+            <mat-label>วันที่เริ่มลา</mat-label>
+            <input matInput [matDatepicker]="startDate" placeholder="วันที่เริ่มลา" [(ngModel)]="startDateValue" name="startDate">
             <mat-datepicker-toggle matSuffix [for]="startDate"></mat-datepicker-toggle>
             <mat-datepicker #startDate></mat-datepicker>
           </mat-form-field>
         </div>
 
         <div class="date-field">
-          <p class="input-description">Choose the end date</p>
+          <p class="input-description">เลือกวันที่สิ้นสุด</p>
           <mat-form-field appearance="fill">
-            <mat-label>End Date</mat-label>
-            <input matInput [matDatepicker]="endDate" placeholder="End Date" [(ngModel)]="endDateValue" name="endDate">
+            <mat-label>วันที่สิ้นสุดลา</mat-label>
+            <input matInput [matDatepicker]="endDate" placeholder="วันที่สิ้นสุดลา" [(ngModel)]="endDateValue" name="endDate">
             <mat-datepicker-toggle matSuffix [for]="endDate"></mat-datepicker-toggle>
             <mat-datepicker #endDate></mat-datepicker>
           </mat-form-field>
         </div>
       </div>
 
-      <p class="input-description">Provide a reason for your leave request</p>
+      <p class="input-description">กรุณาระบุเหตุผลในการขอลา</p>
       <mat-form-field appearance="fill" class="full-width">
-        <mat-label>Reason</mat-label>
-        <textarea matInput placeholder="Enter reason for leave" [(ngModel)]="leaveReason" name="leaveReason"></textarea>
+        <mat-label>เหตุผล</mat-label>
+        <textarea matInput placeholder="กรอกเหตุผลการลา" [(ngModel)]="leaveReason" name="leaveReason"></textarea>
       </mat-form-field>
 
       <div class="button-container">
-        <button mat-raised-button color="warn" type="button" (click)="clearForm(leaveForm)">Cancel</button>
-        <button mat-raised-button color="primary" type="button" (click)="submitRequest()">Submit Request</button>
+        <button mat-raised-button color="warn" type="button" (click)="clearForm(leaveForm)">ยกเลิก</button>
+        <button mat-raised-button color="primary" type="button" (click)="submitRequest()">ส่งคำขอลา</button>
       </div>
     </form>
   </mat-card-content>

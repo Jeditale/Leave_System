@@ -4,19 +4,22 @@
       <strong>สถิติการลาประจำเดือน</strong>
     </mat-card-title>
     <mat-card-subtitle>ข้อมูลการลาของพนักงานทั้งหมด</mat-card-subtitle>
+
+    <div style="flex-grow: 1;"></div>
     <button mat-raised-button color="primary" (click)="exportToExcel()">
       Export to Excel
     </button>
   </mat-card-header>
 
   <mat-card-content>
-    <!-- Filters -->
     <div class="filter-container">
       <mat-form-field appearance="fill">
         <mat-label>เดือน/ปี</mat-label>
         <input matInput [matDatepicker]="monthPicker" [(ngModel)]="selectedMonthYear" readonly />
         <mat-datepicker-toggle matSuffix [for]="monthPicker"></mat-datepicker-toggle>
-        <mat-datepicker #monthPicker startView="multi-year" (yearSelected)="chosenYearHandler($event)" (monthSelected)="chosenMonthHandler($event, monthPicker)">
+        <mat-datepicker #monthPicker startView="multi-year"
+          (yearSelected)="chosenYearHandler($event)"
+          (monthSelected)="chosenMonthHandler($event, monthPicker)">
         </mat-datepicker>
       </mat-form-field>
 
@@ -41,33 +44,34 @@
         </mat-select>
       </mat-form-field>
     </div>
-    <!-- Leave Statistics Chart -->
-    <ngx-charts-bar-vertical
-    [view]="[2000, 300]"
-      [results]="leaveStatsData"
-      [scheme]="colorScheme"
-      [xAxis]="true"
-      [yAxis]="true"
-      [legend]="true"
-      [showDataLabel]="true"
-      [animations]="true">
-    </ngx-charts-bar-vertical>
 
-    <!-- Leave History Table -->
+    <div class="chart-container">
+      <ngx-charts-bar-vertical
+        [view]="[1500,300]"
+        [results]="leaveStatsData"
+        [scheme]="colorScheme"
+        [xAxis]="true"
+        [yAxis]="true"
+        [legend]="true"
+        [showDataLabel]="true"
+        [animations]="true">
+      </ngx-charts-bar-vertical>
+    </div>
+
     <mat-table [dataSource]="filteredLeaveData">
       <ng-container matColumnDef="userName">
         <mat-header-cell *matHeaderCellDef>พนักงาน</mat-header-cell>
-        <mat-cell *matCellDef="let element">{{ element.userName }}</mat-cell>
+        <mat-cell *matCellDef="let element">{{ element.user.username }}</mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="leaveType">
         <mat-header-cell *matHeaderCellDef>ประเภทการลา</mat-header-cell>
-        <mat-cell *matCellDef="let element">{{ element.leaveType }}</mat-cell>
+        <mat-cell *matCellDef="let element">{{ element.leaveType.name }}</mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="daysTaken">
         <mat-header-cell *matHeaderCellDef>วันลาที่ใช้</mat-header-cell>
-        <mat-cell *matCellDef="let element">{{ element.daysTaken }}</mat-cell>
+        <mat-cell *matCellDef="let element">{{ element.daysTaken }} วัน</mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="status">
@@ -76,14 +80,9 @@
       </ng-container>
 
       <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;"  style="cursor: pointer;"></mat-row>
     </mat-table>
 
-
-    <mat-paginator [length]="totalItems" [pageSize]="pageSize" (page)="onPaginateChange($event)">
-    </mat-paginator>
-
-
-e
+    <mat-paginator [length]="totalItems" [pageSize]="pageSize"></mat-paginator>
   </mat-card-content>
 </mat-card>

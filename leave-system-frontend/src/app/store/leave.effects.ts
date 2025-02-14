@@ -9,46 +9,46 @@ import {
   rejectLeaveRequest
 } from './leave.actions';
 import { catchError, map, mergeMap } from 'rxjs/operators';
-import { of } from 'rxjs';
+import { EMPTY, of } from 'rxjs';
 
 @Injectable()
 export class LeaveEffects {
 
-  loadLeaveRequests$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(loadLeaveRequests), // FIXED: Removed `LeaveActions.`
-      mergeMap(() =>
-        this.leaveService.getLeaveRequests().pipe(
-          map(leaveRequests => loadLeaveRequestsSuccess({ leaveRequests })),
-          catchError(error => of(loadLeaveRequestsFailure({ error })))
-        )
-      )
-    )
-  );
+  // loadLeaveRequests$ = createEffect(() =>
+  //   this.actions$.pipe(
+  //     ofType(loadLeaveRequests),
+  //     mergeMap(() =>
+  //       this.leaveService.getLeaveRequests().pipe(
+  //         map(leaveRequests => loadLeaveRequestsSuccess({ leaveRequests })),
+  //         catchError(() => EMPTY)
+  //       )
+  //     )
+  //   )
+  // );
 
-  approveLeaveRequest$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(approveLeaveRequest),
-      mergeMap(action =>
-        this.leaveService.approveLeaveRequest(action.requestId).pipe(
-          map(() => loadLeaveRequests()), // FIXED: Reload leave requests after update
-          catchError(error => of(loadLeaveRequestsFailure({ error }))) // FIXED: Ensure import
-        )
-      )
-    )
-  );
+  // approveLeaveRequest$ = createEffect(() =>
+  //   this.actions$.pipe(
+  //     ofType(approveLeaveRequest),
+  //     mergeMap(action =>
+  //       this.leaveService.approveLeaveRequest(action.requestId).pipe(
+  //         map(() => loadLeaveRequests()), // FIXED: Reload leave requests after update
+  //         catchError(error => of(loadLeaveRequestsFailure({ error }))) // FIXED: Ensure import
+  //       )
+  //     )
+  //   )
+  // );
 
-  rejectLeaveRequest$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(rejectLeaveRequest),
-      mergeMap(action =>
-        this.leaveService.rejectLeaveRequest(action.requestId, action.comment).pipe(
-          map(() => loadLeaveRequests()), // FIXED: Reload leave requests after update
-          catchError(error => of(loadLeaveRequestsFailure({ error }))) // FIXED: Ensure import
-        )
-      )
-    )
-  );
+  // rejectLeaveRequest$ = createEffect(() =>
+  //   this.actions$.pipe(
+  //     ofType(rejectLeaveRequest),
+  //     mergeMap(action =>
+  //       this.leaveService.rejectLeaveRequest(action.requestId, action.comment).pipe(
+  //         map(() => loadLeaveRequests()), // FIXED: Reload leave requests after update
+  //         catchError(error => of(loadLeaveRequestsFailure({ error }))) // FIXED: Ensure import
+  //       )
+  //     )
+  //   )
+  // );
 
   constructor(
     private readonly actions$: Actions,

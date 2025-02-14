@@ -2,6 +2,7 @@ package jay.dev.controller;
 
 import jay.dev.entities.LeaveBalance;
 import jay.dev.entities.LeaveRequest;
+import jay.dev.services.LeaveBalanceService;
 import jay.dev.services.LeaveRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,8 @@ public class LeaveRequestController {
 
     @Autowired
     private LeaveRequestService leaveRequestService;
-
+    @Autowired
+    private LeaveBalanceService leaveBalanceService;
     @PostMapping
     public ResponseEntity<LeaveRequest> createLeaveRequest(@RequestBody LeaveRequest leaveRequest) {
         LeaveRequest createdLeaveRequest = leaveRequestService.createLeaveRequest(leaveRequest);
@@ -37,9 +39,17 @@ public class LeaveRequestController {
     }
 
     @GetMapping("/balance/{userId}")
-    public ResponseEntity<LeaveBalance> getLeaveBalance(@PathVariable Long userId) {
-        return ResponseEntity.ok(leaveRequestService.getLeaveBalance(userId));
+    public ResponseEntity<Integer> getRemainingLeaveDays(@PathVariable Long userId) {
+        LeaveBalance leaveBalance = leaveBalanceService.getLeaveBalanceByUserId(userId);
+        return ResponseEntity.ok(leaveBalance.getRemainingDays());
     }
+    @GetMapping("/pending/count/{userId}")
+    public ResponseEntity<Long> getPendingLeaveCount(@PathVariable Long userId) {
+        long count = leaveRequestService.getPendingLeaveCount(userId);
+        return ResponseEntity.ok(count);
+    }
+
+
 
     @GetMapping("/count-pending/{userId}")
     public ResponseEntity<Long> countPendingLeaveRequests(@PathVariable Long userId) {
@@ -67,14 +77,15 @@ public class LeaveRequestController {
     @PostMapping("/approve/{id}")
     public ResponseEntity<String> approveLeave(@PathVariable Long id, @RequestBody LeaveRequest leaveRequest) {
         leaveRequestService.approveLeave(id, leaveRequest);
-        return ResponseEntity.ok("Leave approved successfully");
+//        return ResponseEntity.ok("Leave approved successfully");
+        return null;
     }
 
     // Endpoint to reject a leave request
     @PostMapping("/reject/{id}")
     public ResponseEntity<String> rejectLeave(@PathVariable Long id, @RequestBody LeaveRequest leaveRequest) {
         leaveRequestService.rejectLeave(id, leaveRequest);
-        return ResponseEntity.ok("Leave rejected successfully");
+        return null;
     }
 
     @GetMapping("/stats/{year}/{month}")

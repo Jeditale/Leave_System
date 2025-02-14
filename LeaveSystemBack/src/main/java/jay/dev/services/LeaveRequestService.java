@@ -24,8 +24,8 @@ public class LeaveRequestService {
     @Autowired
     private LeaveRequestRepository leaveRequestRepository;
 
-    @Autowired
-    private LeaveBalanceRepository leaveBalanceRepository;
+//    @Autowired
+//    private LeaveBalanceRepository leaveBalanceRepository;
 
     public LeaveRequest createLeaveRequest(LeaveRequest leaveRequest) {
         return leaveRequestRepository.save(leaveRequest);
@@ -45,10 +45,10 @@ public class LeaveRequestService {
         return null; // Or throw exception
     }
 
-    public LeaveBalance getLeaveBalance(Long userId) {
-        return leaveBalanceRepository.findByUserId(userId)
-                .orElseThrow(() -> new RuntimeException("Leave balance not found"));
-    }
+//    public LeaveBalance getLeaveBalance(Long userId) {
+//        return leaveBalanceRepository.findByUserId(userId)
+//                .orElseThrow(() -> new RuntimeException("Leave balance not found"));
+//    }
 
     public long countPendingLeaveRequests(Long userId) {
         return leaveRequestRepository.countByStatusAndUserId("Pending", userId);
@@ -67,14 +67,14 @@ public class LeaveRequestService {
     }
     // Get all pending leave requests
     public List<LeaveRequest> getPendingRequests() {
-        return leaveRequestRepository.findByStatus("Pending");
+        return leaveRequestRepository.findByStatus("รออนุมัติ");
     }
 
     // Approve a leave request
     public void approveLeave(Long id, LeaveRequest leaveRequest) {
         LeaveRequest request = leaveRequestRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("LeaveRequest with id " + id + " not found"));
-        request.setStatus("Approved");
+        request.setStatus("อนุมัติแล้ว");
         request.setComment(leaveRequest.getComment()); // Store comment
         leaveRequestRepository.save(request);
     }
@@ -83,9 +83,12 @@ public class LeaveRequestService {
     public void rejectLeave(Long id, LeaveRequest leaveRequest) {
         LeaveRequest request = leaveRequestRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("LeaveRequest with id " + id + " not found"));
-        request.setStatus("Rejected");
+        request.setStatus("ถูกปฏิเสธ");
         request.setComment(leaveRequest.getComment()); // Store comment
         leaveRequestRepository.save(request);
+    }
+    public long getPendingLeaveCount(Long userId) {
+        return leaveRequestRepository.countPendingLeavesByUserId(userId);
     }
 
 
@@ -93,15 +96,17 @@ public class LeaveRequestService {
         LocalDate startDate = LocalDate.of(year, month, 1);
         LocalDate endDate = YearMonth.of(year, month).atEndOfMonth();
 
-        List<LeaveRequest> leaves = leaveRequestRepository.findByStartDateBetween(startDate, endDate);
+        // Fetch only leave requests where the status is "อนุมัติแล้ว" (Approved)
+        List<LeaveRequest> leaves = leaveRequestRepository.findByStartDateBetweenAndStatus(startDate, endDate, "อนุมัติแล้ว");
 
         Map<String, Integer> stats = new HashMap<>();
         for (LeaveRequest leave : leaves) {
-            String leaveType = leave.getLeaveType().getName(); // Assuming LeaveType has a getName() method
+            String leaveType = leave.getLeaveType().getName();
             stats.put(leaveType, stats.getOrDefault(leaveType, 0) + 1);
         }
         return stats;
     }
+
 
     public String exportLeaveDataToExcel(int year, int month) throws IOException {
         LocalDate startDate = LocalDate.of(year, month, 1);

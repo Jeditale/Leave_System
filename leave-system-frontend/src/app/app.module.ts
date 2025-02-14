@@ -29,6 +29,7 @@ import { leaveReducer } from './store/leave.reducer';
 import { LeaveEffects } from './store/leave.effects';
 import { HttpClientModule, provideHttpClient, withFetch } from '@angular/common/http';
 import { LeaveRequestService } from './services/leave.service';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 export const MY_DATE_FORMATS = {
   display: {
@@ -71,7 +72,8 @@ export const MY_DATE_FORMATS = {
     StoreModule.forRoot({ leave: leaveReducer }),
     EffectsModule.forRoot([LeaveEffects]),
     HttpClientModule,
-    EffectsModule.forFeature([LeaveEffects])
+    EffectsModule.forFeature([LeaveEffects]),
+    MatProgressSpinnerModule
 
 
 

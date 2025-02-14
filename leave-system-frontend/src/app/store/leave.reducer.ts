@@ -1,5 +1,5 @@
 import { createReducer, on } from '@ngrx/store';
-import { loadLeaveRequestsSuccess, loadLeaveRequestsFailure, approveLeaveRequest, rejectLeaveRequest } from './leave.actions';
+import { loadLeaveRequestsSuccess, loadLeaveRequestsFailure, approveLeaveRequest, rejectLeaveRequest, approveLeaveRequestSuccess, rejectLeaveRequestSuccess } from './leave.actions';
 
 export interface LeaveState {
   leaveRequests: any[];
@@ -33,5 +33,19 @@ export const leaveReducer = createReducer(
     leaveRequests: state.leaveRequests.map(request =>
       request.id === requestId ? { ...request, status: 'Rejected' } : request
     )
-  }))
+  })),
+  on(approveLeaveRequestSuccess, (state, { requestId }) => {
+    return {
+      ...state,
+      leaveRequests: state.leaveRequests.filter(req => req.id !== requestId)
+    };
+  }),
+
+  on(rejectLeaveRequestSuccess, (state, { requestId }) => {
+    return {
+      ...state,
+      leaveRequests: state.leaveRequests.filter(req => req.id !== requestId)
+    };
+  }),
+
 );

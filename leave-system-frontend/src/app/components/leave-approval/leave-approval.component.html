@@ -1,52 +1,69 @@
 <mat-card>
   <mat-card-header>
-    <mat-card-title>Pending Leave Requests</mat-card-title>
+      <mat-card-title>คำขอลา</mat-card-title>
   </mat-card-header>
   <mat-card-content>
-    <div class="user-list-container">
-      <mat-table [dataSource]="dataSource">
-        <ng-container matColumnDef="userName">
-          <mat-header-cell *matHeaderCellDef>พนักงาน</mat-header-cell>
-          <mat-cell *matCellDef="let element" (click)="showDetails(element)" style="cursor: pointer;">
-            {{ element.userName }}
-          </mat-cell>
-        </ng-container>
+      <div class="user-list-container">
+        <!-- User List Table with Pagination -->
+        <mat-table [dataSource]="paginatedData">
+          <ng-container matColumnDef="userName">
+            <mat-header-cell *matHeaderCellDef> ชื่อผู้ใช้ </mat-header-cell> <!-- "Username" in Thai -->
+            <mat-cell *matCellDef="let element" (click)="showDetails(element)">
+              {{ element.user.username }}
+            </mat-cell>
+          </ng-container>
 
-        <ng-container matColumnDef="leaveType">
-          <mat-header-cell *matHeaderCellDef>ประเภทการลา</mat-header-cell>
-          <mat-cell *matCellDef="let element">{{ element.leaveType }}</mat-cell>
-        </ng-container>
+          <ng-container matColumnDef="leaveType">
+            <mat-header-cell *matHeaderCellDef> ประเภทการลา </mat-header-cell> <!-- "Leave Type" in Thai -->
+            <mat-cell *matCellDef="let element">{{ element.leaveType.name }}</mat-cell>
+          </ng-container>
 
-        <ng-container matColumnDef="status">
-          <mat-header-cell *matHeaderCellDef>สถานะ</mat-header-cell>
-          <mat-cell *matCellDef="let element">{{ element.status }}</mat-cell>
-        </ng-container>
+          <ng-container matColumnDef="status">
+            <mat-header-cell *matHeaderCellDef> สถานะ </mat-header-cell> <!-- "Status" in Thai -->
+            <mat-cell *matCellDef="let element">{{ element.status }}</mat-cell>
+          </ng-container>
 
-        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-        <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="showDetails(row)" style="cursor: pointer;"></mat-row>
-      </mat-table>
+          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="showDetails(row)"></mat-row>
+        </mat-table>
 
-      <mat-paginator [length]="totalItems" [pageSize]="pageSize" (page)="onPaginateChange($event)"></mat-paginator>
-    </div>
-
-    <!-- Details Section (Hidden until a row is clicked) -->
-    <div *ngIf="selectedLeaveRequest" class="leave-details-container">
-      <h3>{{ selectedLeaveRequest.userName }}'s Leave Request</h3>
-      <div class="leave-details">
-        <p><strong>Leave Type:</strong> {{ selectedLeaveRequest.leaveType }}</p>
-        <p><strong>Days Taken:</strong> {{ selectedLeaveRequest.daysTaken }}</p>
-        <p><strong>Status:</strong> {{ selectedLeaveRequest.status }}</p>
+        <!-- Pagination Control -->
+        <mat-paginator [length]="totalItems" [pageSize]="pageSize" (page)="onPaginateChange($event)">
+        </mat-paginator>
       </div>
 
-      <mat-form-field appearance="fill" class="full-width">
-        <mat-label>Comment</mat-label>
-        <textarea matInput [(ngModel)]="comment"></textarea>
-      </mat-form-field>
+  <!-- Details Section (Initially Hidden) -->
+  <div *ngIf="selectedLeaveRequest" class="leave-details-container">
+    <!-- Title with Username -->
+    <h3>คำขอลาของ {{ selectedLeaveRequest.user.username }}</h3> <!-- "Leave Request" in Thai -->
 
-      <div class="button-container">
-        <button mat-raised-button color="warn" (click)="rejectRequest()" class="reject-btn">Reject</button>
-        <button mat-raised-button color="primary" (click)="approveRequest()" class="approve-btn">Approve</button>
+    <div class="leave-details">
+      <!-- Left Column: Leave Type, Days Requested -->
+      <div class="left-column">
+        <p><strong>ประเภทการลา:</strong> {{ selectedLeaveRequest.leaveType.name }}</p> <!-- "Leave Type" in Thai -->
+        <p><strong>จำนวนวันที่ขอลา:</strong> {{ calculateDays(selectedLeaveRequest.startDate, selectedLeaveRequest.endDate) }}</p> <!-- "Days Requested" in Thai -->
+      </div>
+
+      <!-- Right Column: Start Date, End Date, Reason -->
+      <div class="right-column">
+        <p><strong>วันที่เริ่มลา:</strong> {{ selectedLeaveRequest.startDate | date: 'shortDate' }}</p> <!-- "Start Date" in Thai -->
+        <p><strong>วันที่สิ้นสุดลา:</strong> {{ selectedLeaveRequest.endDate | date: 'shortDate' }}</p> <!-- "End Date" in Thai -->
+        <p><strong>เหตุผล:</strong> {{ selectedLeaveRequest.reason }}</p> <!-- "Reason" in Thai -->
       </div>
     </div>
+
+    <!-- Comment Section -->
+    <mat-form-field appearance="fill" class="comment-form">
+      <mat-label>ความคิดเห็น</mat-label> <!-- "Comment" in Thai -->
+      <textarea matInput [(ngModel)]="comment"></textarea>
+    </mat-form-field>
+
+    <!-- Approve/Reject Buttons -->
+    <div class="button-container">
+      <button mat-raised-button color="warn" (click)="rejectRequest()" class="reject-btn">ปฏิเสธ</button> <!-- "Reject" in Thai -->
+      <button mat-raised-button color="primary" (click)="approveRequest()" class="approve-btn">อนุมัติ</button> <!-- "Approve" in Thai -->
+    </div>
+  </div>
+
   </mat-card-content>
 </mat-card>

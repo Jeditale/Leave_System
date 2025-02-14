@@ -1,79 +1,76 @@
 package jay.dev.initializer;
 
+import jakarta.annotation.PostConstruct;
 import jay.dev.entities.LeaveBalance;
-import jay.dev.entities.LeaveRequest;
 import jay.dev.entities.LeaveType;
 import jay.dev.entities.User;
 import jay.dev.repositories.LeaveBalanceRepository;
-import jay.dev.repositories.LeaveRequestRepository;
 import jay.dev.repositories.LeaveTypeRepository;
 import jay.dev.repositories.UserRepository;
-import org.springframework.boot.CommandLineRunner;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
-import java.util.List;
 
 @Component
-public class DataInitializer implements CommandLineRunner {
+public class DataInitializer {
 
-    private final UserRepository userRepository;
-    private final LeaveTypeRepository leaveTypeRepository;
-    private final LeaveRequestRepository leaveRequestRepository;
-    private final LeaveBalanceRepository leaveBalanceRepository;
+    @Autowired
+    private UserRepository userRepository;
 
-    public DataInitializer(UserRepository userRepository, LeaveTypeRepository leaveTypeRepository, LeaveRequestRepository leaveRequestRepository, LeaveBalanceRepository leaveBalanceRepository) {
-        this.userRepository = userRepository;
-        this.leaveTypeRepository = leaveTypeRepository;
-        this.leaveRequestRepository = leaveRequestRepository;
-        this.leaveBalanceRepository = leaveBalanceRepository;
+    @Autowired
+    private LeaveTypeRepository leaveTypeRepository;
+
+    @Autowired
+    private LeaveBalanceRepository leaveBalanceRepository;
+
+    @PostConstruct
+    public void initializeData() {
+        // Check if data is already populated, to ensure this runs only once
+        if (userRepository.count() == 0) {
+            initializeUsers();
+        }
+        if (leaveTypeRepository.count() == 0) {
+            initializeLeaveTypes();
+        }
+        if (leaveBalanceRepository.count() == 0) {
+            initializeLeaveBalances();
+        }
     }
 
-    @Override
-    public void run(String... args) throws Exception {
-        // Insert only if the database is empty
-        if (userRepository.count() == 0) {
-            User user = new User();
-            user.setUsername("john.doe");
-            user.setEmail("john.doe@example.com");
-            user.setRole("Employee");
-            user.setDepartment("IT");
-            userRepository.save(user);
-        }
+    private void initializeUsers() {
+        User user = new User();
+        user.setUsername("Jd123");
+        user.setEmail("Jeditale@hotmail.com");
+        user.setRole("Back-end");
+        user.setDepartment("IT");
 
-        if (leaveTypeRepository.count() == 0) {
-            List<LeaveType> leaveTypes = List.of(
-                    new LeaveType(null, "Sick Leave", "Leave for health issues", 10),
-                    new LeaveType(null, "Casual Leave", "Short-term personal leave", 5),
-                    new LeaveType(null, "Maternity Leave", "Leave for new mothers", 90),
-                    new LeaveType(null, "Paternity Leave", "Leave for new fathers", 15)
-            );
-            leaveTypeRepository.saveAll(leaveTypes);
-        }
+        userRepository.save(user);
+    }
 
-        User user = userRepository.findAll().get(0);
-        List<LeaveType> leaveTypes = leaveTypeRepository.findAll();
+    private void initializeLeaveTypes() {
+        LeaveType leaveType1 = new LeaveType(5L, "ลาป่วย", "Sick Leave", 10);
+        LeaveType leaveType2 = new LeaveType(6L, "ลาพักร้อน", "Vacation Leave", 5);
+        LeaveType leaveType3 = new LeaveType(7L, "ลากิจ", "Personal Leave", 90);
+        LeaveType leaveType4 = new LeaveType(8L, "ลาคลอด", "Maternity Leave", 15);
 
-        if (leaveBalanceRepository.count() == 0) {
-            for (LeaveType leaveType : leaveTypes) {
-                LeaveBalance leaveBalance = new LeaveBalance();
-                leaveBalance.setUser(user);
-                leaveBalance.setLeaveType(leaveType);
-                leaveBalance.setYear(LocalDate.now().getYear());
-                leaveBalance.setRemainingDays(leaveType.getMaxDays()); // Set full balance
-                leaveBalanceRepository.save(leaveBalance);
-            }
-        }
+        leaveTypeRepository.save(leaveType1);
+        leaveTypeRepository.save(leaveType2);
+        leaveTypeRepository.save(leaveType3);
+        leaveTypeRepository.save(leaveType4);
+    }
 
-        if (leaveRequestRepository.count() == 0) {
-            LeaveRequest leaveRequest = new LeaveRequest();
-            leaveRequest.setUser(user);
-            leaveRequest.setLeaveType(leaveTypes.get(0)); // Assign first leave type
-            leaveRequest.setStartDate(LocalDate.now().plusDays(5));
-            leaveRequest.setEndDate(LocalDate.now().plusDays(7));
-            leaveRequest.setStatus("Pending");
-            leaveRequest.setReason("Medical appointment");
-            leaveRequestRepository.save(leaveRequest);
+    private void initializeLeaveBalances() {
+        User user = userRepository.findByUsername("Jd123"); // Find the user by username
+        LeaveType leaveType = leaveTypeRepository.findById(5L).orElse(null); // Get the leave type for sick leave
+
+        if (user != null && leaveType != null) {
+            LeaveBalance leaveBalance = new LeaveBalance();
+            leaveBalance.setUser(user);
+            leaveBalance.setLeaveType(leaveType);
+            leaveBalance.setYear(2025);
+            leaveBalance.setRemainingDays(10);
+
+            leaveBalanceRepository.save(leaveBalance);
         }
     }
 }

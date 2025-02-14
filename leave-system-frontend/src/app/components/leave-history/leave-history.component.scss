@@ -14,6 +14,11 @@
   gap: 15px;
   margin-bottom: 20px;
 }
+.mat-card-header {
+  display: flex;
+  justify-content: space-between; /* Pushes button to the right */
+  align-items: center; /* Ensures vertical alignment of text and button */
+}
 
 .statistics-container {
   margin-top: 20px;
@@ -21,6 +26,12 @@
   border: 1px solid #ccc;
   border-radius: 8px;
   background-color: #f9f9f9;
+}
+.chart-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
 }
 
 .details-grid {

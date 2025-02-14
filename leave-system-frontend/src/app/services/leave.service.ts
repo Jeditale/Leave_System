@@ -11,9 +11,19 @@ export class LeaveRequestService {
   constructor(private http: HttpClient) {}
 
   // GET all leave requests
-  getLeaveRequests(leaveData?: any): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl},{ params: leaveData }`);
+  getLeaveRequests(): Observable<any[]> {
+    console.log("Fetching leave requests...");
+    return this.http.get<any[]>(`${this.baseUrl}`);
   }
+  getLeaveRequestsByUserId(userId: number): Observable<any[]> {
+    console.log("Fetching leave requests...");
+    return this.http.get<any[]>(`${this.baseUrl}/user/${userId}`);
+  }
+  countPendingByUserId(userId: number): Observable<number> {
+    console.log("Fetching pending leave count...");
+    return this.http.get<number>(`${this.baseUrl}/pending/count/${userId}`);
+  }
+
 
   // Create a new leave request
   createLeaveRequest(leaveData: any): Observable<any> {
@@ -47,7 +57,9 @@ export class LeaveRequestService {
 
   // Export leave data for a specific month as Base64 (Excel file)
   exportLeaveData(year: number, month: number): Observable<string> {
-    return this.http.get<string>(`${this.baseUrl}/export/${year}/${month}`);
+    return this.http.get(`http://localhost:5300/api/leave-requests/export/${year}/${month}`, {
+      responseType: 'text'  // 👈 Important! Expecting a Base64 string, not JSON.
+    });
   }
 
 }

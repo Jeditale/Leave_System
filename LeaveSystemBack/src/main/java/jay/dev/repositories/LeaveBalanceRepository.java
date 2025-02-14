@@ -2,11 +2,18 @@ package jay.dev.repositories;
 
 import jay.dev.entities.LeaveBalance;
 import org.springframework.data.jpa.repository.JpaRepository;
-import java.util.Optional;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
+@Repository
 public interface LeaveBalanceRepository extends JpaRepository<LeaveBalance, Long> {
 
-    Optional<LeaveBalance> findByUserIdAndLeaveTypeId(Long userId, Long leaveTypeId);
 
-    Optional<LeaveBalance> findByUserId(Long userId);
+    @Query("SELECT lb FROM LeaveBalance lb WHERE lb.user.id =:userId")
+    List<LeaveBalance>findByUserId(@Param("userId")Long userId);
+
+
 }
