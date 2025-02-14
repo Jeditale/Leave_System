@@ -1,7 +1,7 @@
 # Release Notes - v1.0.1 - 2025-02-14
 
 ## Overview
-###This release is init release bugs fixes will comes afterward
+### This release is init release bugs fixes will comes afterward
 ---
 
 ## Bug Fixes
@@ -18,13 +18,15 @@
   **Workaround**: None available at this time.
   but I have commented out the functions currently call api directly from service
 
+-**[LEAVE-002]**:Unfinished UI
+**[WHY?]**: Even for me its not well enough but I will try to workaround for better UI
 ---
 
 ## Future Updates
 
 - The next update (v1.0.2) will address:
 -Fixing bug **[Leave-001]**
-  
+-UI **[LEAVE-002]***
 ---
 
 ## Predict fix date 
