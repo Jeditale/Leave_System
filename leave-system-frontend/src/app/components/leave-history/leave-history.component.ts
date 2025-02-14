@@ -40,13 +40,13 @@ export class LeaveHistoryComponent implements OnInit {
   ];
 
   colorScheme: Color = {
-    domain: ['#FF5733', '#33FF57', '#3357FF'], // Define colors
+    domain: ['#FF5733', '#33FF57', '#3357FF'],
     group: ScaleType.Ordinal,
     selectable: true,
     name: 'customScheme'
   };
 
-  constructor(private leaveService: LeaveRequestService) {}
+  constructor(private readonly leaveService: LeaveRequestService) {}
 
   // Method to set the selected month/year
   setMonthYear(event: Date, datepicker: any) {
@@ -55,15 +55,12 @@ export class LeaveHistoryComponent implements OnInit {
     this.filterData();  // Update data when month/year is selected
   }
 
-  // Method to handle pagination change (if needed)
-  onPaginateChange(event: any) {
-    console.log('Page Change:', event);
-  }
+
 
   // Handles year selection
   chosenYearHandler(normalizedYear: Date) {
     this.chosenYear = normalizedYear.getFullYear(); // Store selected year
-    console.log(this.chosenYear);
+
     this.filterData();  // Update data when year is selected
   }
 
@@ -76,7 +73,7 @@ export class LeaveHistoryComponent implements OnInit {
     }
 
     datepicker.close(); // Close the picker after selection
-    console.log(this.selectedMonthYear); // Output selected month/year
+
     this.filterData();  // Update data when month is selected
   }
 
@@ -117,7 +114,7 @@ export class LeaveHistoryComponent implements OnInit {
     const startDate = new Date(dayStart);
     const endDate = new Date(dayEnd);
 
-    console.log('Parsed Dates:', { startDate, endDate });
+
 
     // Ensure valid date conversion
     if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
@@ -129,7 +126,7 @@ export class LeaveHistoryComponent implements OnInit {
     const diffTime = endDate.getTime() - startDate.getTime();
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
 
-    console.log('Days Calculated:', { diffDays });
+
 
     return diffDays > 0 ? diffDays : 0; // Ensure non-negative days
   }

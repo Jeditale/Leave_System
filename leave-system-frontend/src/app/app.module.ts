@@ -54,7 +54,7 @@ export const MY_DATE_FORMATS = {
     StoreModule.forRoot({}, {}),
     EffectsModule.forRoot([]),
     MatButtonModule,
-    MatCardModule,  // Ensure MatCardModule is imported here
+    MatCardModule,
     MatIconModule,
     MatTableModule,
     MatFormFieldModule,

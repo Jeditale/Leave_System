@@ -12,7 +12,7 @@ export class DashboardComponent implements OnInit {
   usedLeaveThisYear: number = 0;
   recentLeaves: any[] = [];
 
-  constructor(private leaveService: LeaveRequestService) {}
+  constructor(private readonly leaveService: LeaveRequestService) {}
 
   ngOnInit(): void {
     const userId = 1; //locked to 1 because no login
@@ -35,7 +35,6 @@ export class DashboardComponent implements OnInit {
     // Get all leave requests (for demonstration purposes)
     this.leaveService.getLeaveRequestsByUserId(userId).subscribe(
       (data) => {
-        console.log("API Response:", data);
 
         this.recentLeaves = Array.isArray(data) ? data : [data]; // Ensure it's an array
 

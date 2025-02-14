@@ -12,7 +12,7 @@
         </div>
       </div>
       <div class="stat">
-        <mat-icon style="-webkit-text-fill-color:rgb(0, 201, 27)">calendar_today</mat-icon> <!-- Changed to calendar_today -->
+        <mat-icon style="-webkit-text-fill-color:rgb(0, 201, 27)">calendar_today</mat-icon>
         <div class="text-container">
           <p>คำขอลาหยุดที่รอดำเนินการ</p>
           <h3>{{ pendingLeaves }} รายการ</h3>
@@ -31,7 +31,6 @@
 
       <div class="leave-list">
         <h3>คำขอลาหยุดล่าสุด</h3>
-        <!-- Header Row -->
         <div class="leave-header">
           <span class="leave-header-item">ชื่อผู้ใช้</span>
           <span class="leave-header-item">ประเภทการลา</span>
@@ -39,7 +38,6 @@
           <span class="leave-header-item">สถานะ</span>
         </div>
 
-        <!-- Leave Request Rows -->
         <div *ngFor="let leave of recentLeaves" class="leave-row">
           <span class="leave-item">{{ leave.user.username }}</span>
           <span class="leave-item">{{ leave.leaveType.name }}</span>
@@ -54,7 +52,6 @@
             {{ leave.status }}
           </div>
         </div>
-
       </div>
     </div>
   </mat-card-content>

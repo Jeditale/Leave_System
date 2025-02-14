@@ -4,22 +4,21 @@
   </mat-card-header>
   <mat-card-content>
       <div class="user-list-container">
-        <!-- User List Table with Pagination -->
         <mat-table [dataSource]="paginatedData">
           <ng-container matColumnDef="userName">
-            <mat-header-cell *matHeaderCellDef> ชื่อผู้ใช้ </mat-header-cell> <!-- "Username" in Thai -->
+            <mat-header-cell *matHeaderCellDef> ชื่อผู้ใช้ </mat-header-cell>
             <mat-cell *matCellDef="let element" (click)="showDetails(element)">
               {{ element.user.username }}
             </mat-cell>
           </ng-container>
 
           <ng-container matColumnDef="leaveType">
-            <mat-header-cell *matHeaderCellDef> ประเภทการลา </mat-header-cell> <!-- "Leave Type" in Thai -->
+            <mat-header-cell *matHeaderCellDef> ประเภทการลา </mat-header-cell>
             <mat-cell *matCellDef="let element">{{ element.leaveType.name }}</mat-cell>
           </ng-container>
 
           <ng-container matColumnDef="status">
-            <mat-header-cell *matHeaderCellDef> สถานะ </mat-header-cell> <!-- "Status" in Thai -->
+            <mat-header-cell *matHeaderCellDef> สถานะ </mat-header-cell>
             <mat-cell *matCellDef="let element">{{ element.status }}</mat-cell>
           </ng-container>
 
@@ -32,38 +31,34 @@
         </mat-paginator>
       </div>
 
-  <!-- Details Section (Initially Hidden) -->
-  <div *ngIf="selectedLeaveRequest" class="leave-details-container">
-    <!-- Title with Username -->
-    <h3>คำขอลาของ {{ selectedLeaveRequest.user.username }}</h3> <!-- "Leave Request" in Thai -->
 
+  <div *ngIf="selectedLeaveRequest" class="leave-details-container">
+    <h3>คำขอลาของ {{ selectedLeaveRequest.user.username }}</h3>
     <div class="leave-details">
-      <!-- Left Column: Leave Type, Days Requested -->
       <div class="left-column">
-        <p><strong>ประเภทการลา:</strong> {{ selectedLeaveRequest.leaveType.name }}</p> <!-- "Leave Type" in Thai -->
-        <p><strong>จำนวนวันที่ขอลา:</strong> {{ calculateDays(selectedLeaveRequest.startDate, selectedLeaveRequest.endDate) }}</p> <!-- "Days Requested" in Thai -->
+        <p><strong>ประเภทการลา:</strong> {{ selectedLeaveRequest.leaveType.name }}</p>
+        <p><strong>จำนวนวันที่ขอลา:</strong> {{ calculateDays(selectedLeaveRequest.startDate, selectedLeaveRequest.endDate) }}</p>
       </div>
 
-      <!-- Right Column: Start Date, End Date, Reason -->
+
       <div class="right-column">
-        <p><strong>วันที่เริ่มลา:</strong> {{ selectedLeaveRequest.startDate | date: 'shortDate' }}</p> <!-- "Start Date" in Thai -->
-        <p><strong>วันที่สิ้นสุดลา:</strong> {{ selectedLeaveRequest.endDate | date: 'shortDate' }}</p> <!-- "End Date" in Thai -->
-        <p><strong>เหตุผล:</strong> {{ selectedLeaveRequest.reason }}</p> <!-- "Reason" in Thai -->
+        <p><strong>วันที่เริ่มลา:</strong> {{ selectedLeaveRequest.startDate | date: 'shortDate' }}</p>
+        <p><strong>วันที่สิ้นสุดลา:</strong> {{ selectedLeaveRequest.endDate | date: 'shortDate' }}</p>
+        <p><strong>เหตุผล:</strong> {{ selectedLeaveRequest.reason }}</p>
       </div>
     </div>
 
-    <!-- Comment Section -->
+
     <mat-form-field appearance="fill" class="comment-form">
-      <mat-label>ความคิดเห็น</mat-label> <!-- "Comment" in Thai -->
+      <mat-label>ความคิดเห็น</mat-label>
       <textarea matInput [(ngModel)]="comment"></textarea>
     </mat-form-field>
 
-    <!-- Approve/Reject Buttons -->
+
     <div class="button-container">
-      <button mat-raised-button color="warn" (click)="rejectRequest()" class="reject-btn">ปฏิเสธ</button> <!-- "Reject" in Thai -->
-      <button mat-raised-button color="primary" (click)="approveRequest()" class="approve-btn">อนุมัติ</button> <!-- "Approve" in Thai -->
+      <button mat-raised-button color="warn" (click)="rejectRequest()" class="reject-btn">ปฏิเสธ</button>
+      <button mat-raised-button color="primary" (click)="approveRequest()" class="approve-btn">อนุมัติ</button>
     </div>
   </div>
-
   </mat-card-content>
 </mat-card>

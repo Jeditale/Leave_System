@@ -17,7 +17,7 @@ export class LeaveApprovalComponent implements OnInit {
   selectedLeaveRequest: any = null;
   comment: string = '';
 
-  constructor(private leaveService: LeaveRequestService) {}
+  constructor(private readonly leaveService: LeaveRequestService) {}
 
   ngOnInit(): void {
     this.loadLeaveRequests();
@@ -26,7 +26,7 @@ export class LeaveApprovalComponent implements OnInit {
   loadLeaveRequests() {
     this.leaveService.getPendingLeaveRequests().subscribe(
       (data) => {
-        console.log(data)
+
         this.leaveRequests = data;
         this.totalItems = this.leaveRequests.length;
         this.paginateData();
@@ -65,7 +65,7 @@ export class LeaveApprovalComponent implements OnInit {
     if (this.selectedLeaveRequest) {
       this.leaveService.approveLeaveRequest(this.selectedLeaveRequest.id).subscribe(
         () => {
-          console.log('Leave request approved');
+
           this.selectedLeaveRequest = null;
           this.loadLeaveRequests(); // Reload requests after approval
         },
@@ -80,7 +80,7 @@ export class LeaveApprovalComponent implements OnInit {
     if (this.selectedLeaveRequest) {
       this.leaveService.rejectLeaveRequest(this.selectedLeaveRequest.id, this.comment).subscribe(
         () => {
-          console.log('Leave request rejected');
+
           this.selectedLeaveRequest = null;
           this.loadLeaveRequests(); // Reload requests after rejection
         },

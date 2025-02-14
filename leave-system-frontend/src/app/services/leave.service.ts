@@ -12,15 +12,15 @@ export class LeaveRequestService {
 
   // GET all leave requests
   getLeaveRequests(): Observable<any[]> {
-    console.log("Fetching leave requests...");
+
     return this.http.get<any[]>(`${this.baseUrl}`);
   }
   getLeaveRequestsByUserId(userId: number): Observable<any[]> {
-    console.log("Fetching leave requests...");
+
     return this.http.get<any[]>(`${this.baseUrl}/user/${userId}`);
   }
   countPendingByUserId(userId: number): Observable<number> {
-    console.log("Fetching pending leave count...");
+
     return this.http.get<number>(`${this.baseUrl}/pending/count/${userId}`);
   }
 

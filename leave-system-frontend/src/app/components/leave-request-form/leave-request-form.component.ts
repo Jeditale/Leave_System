@@ -12,12 +12,12 @@ export class LeaveRequestFormComponent {
   endDateValue: Date | null = null;
   leaveReason: string = '';
 
-  constructor(private leaveService: LeaveRequestService) {}
+  constructor(private readonly leaveService: LeaveRequestService) {}
 
   submitRequest() {
     const leaveData = {
-      user: { id: 1 }, // Replace with actual user ID
-      leaveType: { id: this.leaveType }, // Only send ID
+      user: { id: 1 }, //1 because no login
+      leaveType: { id: this.leaveType },
       startDate: this.startDateValue,
       endDate: this.endDateValue,
       status: 'รออนุมัติ',
@@ -27,13 +27,13 @@ export class LeaveRequestFormComponent {
 
     this.leaveService.createLeaveRequest(leaveData).subscribe(
       response => {
-        console.log('Leave request submitted', response);
+
 
         // Clear input fields after successful submission
-        this.leaveType = null; // Clear leaveType input
-        this.startDateValue = null; // Clear start date input
-        this.endDateValue = null; // Clear end date input
-        this.leaveReason = ''; // Clear leave reason input
+        this.leaveType = null;
+        this.startDateValue = null;
+        this.endDateValue = null;
+        this.leaveReason = '';
       },
       error => {
         console.error('Error submitting leave request:', error);
