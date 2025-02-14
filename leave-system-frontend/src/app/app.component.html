@@ -1,26 +1,26 @@
 <mat-toolbar color="primary">
-  <span>Leave Management System</span>
+  <span>ระบบลางาน</span>
 </mat-toolbar>
 
 <div class="container">
   <mat-tab-group>
-    <!-- Dashboard Tab -->
-    <mat-tab label="Dashboard">
+    <!-- แดชบอร์ด -->
+    <mat-tab label="แดชบอร์ด">
       <app-dashboard></app-dashboard>
     </mat-tab>
 
-    <!-- Leave Request Tab -->
-    <mat-tab label="Leave Request">
+    <!-- ขอลา -->
+    <mat-tab label="ขอลางาน">
       <app-leave-request></app-leave-request>
     </mat-tab>
 
-    <!-- Leave History Tab -->
-    <mat-tab label="Leave History">
+    <!-- ประวัติ -->
+    <mat-tab label="ประวัติการลา">
       <app-leave-history></app-leave-history>
     </mat-tab>
 
-    <!-- Leave Approval Tab (for Managers) -->
-    <mat-tab label="Leave Approval">
+    <!-- อนุมัติ-->
+    <mat-tab label="อนุมัติการลา">
       <app-leave-approval></app-leave-approval>
     </mat-tab>
   </mat-tab-group>

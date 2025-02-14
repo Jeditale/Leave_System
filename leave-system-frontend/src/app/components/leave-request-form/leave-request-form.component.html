@@ -18,7 +18,7 @@
         </mat-select>
       </mat-form-field>
 
-      <div class="date-container">
+      <div  class="date-container">
         <div class="date-field">
           <p class="input-description">เลือกวันที่เริ่มต้น</p>
           <mat-form-field appearance="fill">
@@ -29,8 +29,8 @@
           </mat-form-field>
         </div>
 
-        <div class="date-field">
-          <p class="input-description">เลือกวันที่สิ้นสุด</p>
+        <div style="margin-left: 307px;" class="date-field">
+          <p  class="input-description">เลือกวันที่สิ้นสุด</p>
           <mat-form-field appearance="fill">
             <mat-label>วันที่สิ้นสุดลา</mat-label>
             <input matInput [matDatepicker]="endDate" placeholder="วันที่สิ้นสุดลา" [(ngModel)]="endDateValue" name="endDate">

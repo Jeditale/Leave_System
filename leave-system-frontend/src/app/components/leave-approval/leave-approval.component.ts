@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { LeaveRequestService } from '../../services/leave.service';
-
 @Component({
   selector: 'app-leave-approval',
   templateUrl: './leave-approval.component.html',
@@ -18,20 +17,6 @@ export class LeaveApprovalComponent implements OnInit {
   selectedLeaveRequest: any = null;
   comment: string = '';
 
-  // Translation map for status and leave types
-  statusTranslationMap: { [key: string]: string } = {
-    'Pending': 'รออนุมัติ',
-    'Approved': 'อนุมัติแล้ว',
-    'Rejected': 'ปฏิเสธ'
-  };
-
-  leaveTypeTranslationMap: { [key: string]: string } = {
-    'Sick Leave': 'ลาป่วย',
-    'Annual Leave': 'ลากิจ',
-    'Maternity Leave': 'ลาคลอด',
-    // Add other leave types here
-  };
-
   constructor(private leaveService: LeaveRequestService) {}
 
   ngOnInit(): void {
@@ -41,8 +26,8 @@ export class LeaveApprovalComponent implements OnInit {
   loadLeaveRequests() {
     this.leaveService.getPendingLeaveRequests().subscribe(
       (data) => {
-        console.log(data);
-        this.leaveRequests = this.translateLeaveRequests(data); // Translate the data before storing
+        console.log(data)
+        this.leaveRequests = data;
         this.totalItems = this.leaveRequests.length;
         this.paginateData();
       },
@@ -50,19 +35,6 @@ export class LeaveApprovalComponent implements OnInit {
         console.error('Error loading leave requests', error);
       }
     );
-  }
-
-  translateLeaveRequests(requests: any[]): any[] {
-    return requests.map(request => {
-      return {
-        ...request,
-        status: this.statusTranslationMap[request.status] || request.status, // Translate status
-        leaveType: {
-          ...request.leaveType,
-          name: this.leaveTypeTranslationMap[request.leaveType.name] || request.leaveType.name // Translate leave type
-        }
-      };
-    });
   }
 
   calculateDays(startDate: string, endDate: string): number {

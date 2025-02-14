@@ -15,7 +15,7 @@ export class DashboardComponent implements OnInit {
   constructor(private leaveService: LeaveRequestService) {}
 
   ngOnInit(): void {
-    const userId = 1; // Replace with actual user ID as needed
+    const userId = 1; //locked to 1 because no login
 
     // Get leave balance for the user
     this.leaveService.getLeaveBalance(userId).subscribe(
@@ -30,8 +30,7 @@ export class DashboardComponent implements OnInit {
 
 
 
-    // For pending leave requests & used leave this year, you could call appropriate endpoints.
-    // Here, we'll simulate those numbers or assume they're part of the leave request list.
+
 
     // Get all leave requests (for demonstration purposes)
     this.leaveService.getLeaveRequestsByUserId(userId).subscribe(
@@ -39,7 +38,7 @@ export class DashboardComponent implements OnInit {
         console.log("API Response:", data);
 
         this.recentLeaves = Array.isArray(data) ? data : [data]; // Ensure it's an array
-        // this.recentLeaves = this.recentLeaves.slice(0, 5); // Keep the last 5 requests
+
 
         // Calculate leave days for each request (endDate - startDate + 1)
         this.recentLeaves = this.recentLeaves.map((leave: any) => ({
