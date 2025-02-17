@@ -28,11 +28,12 @@ public class LeaveRequestController {
         return ResponseEntity.ok(leaveRequestService.getAllLeaveRequests());
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<LeaveRequest> updateLeaveRequestStatus(@PathVariable Long id, @RequestParam String status) {
-        LeaveRequest updatedLeaveRequest = leaveRequestService.updateLeaveRequestStatus(id, status);
-        return ResponseEntity.ok(updatedLeaveRequest);
-    }
+    //removed because it was only uses to debug and edit data(which now i used dbeaver instead)
+//    @PutMapping("/{id}")
+//    public ResponseEntity<LeaveRequest> updateLeaveRequestStatus(@PathVariable Long id, @RequestParam String status) {
+//        LeaveRequest updatedLeaveRequest = leaveRequestService.updateLeaveRequestStatus(id, status);
+//        return ResponseEntity.ok(updatedLeaveRequest);
+//    }
 
     @GetMapping("/balance/{userId}")
     public ResponseEntity<Integer> getRemainingLeaveDays(@PathVariable Long userId) {
@@ -55,10 +56,10 @@ public class LeaveRequestController {
         return ResponseEntity.ok(leaveRequestService.countThisYearLeave(userId, "Approved"));
     }
 
-    @GetMapping("/calendar")
-    public ResponseEntity<List<LeaveRequest>> getAllEmployeeLeavesForCalendar() {
-        return ResponseEntity.ok(leaveRequestService.getAllEmployeeLeavesForCalendar());
-    }
+//    @GetMapping("/calendar")
+//    public ResponseEntity<List<LeaveRequest>> getAllEmployeeLeavesForCalendar() {
+//        return ResponseEntity.ok(leaveRequestService.getAllEmployeeLeavesForCalendar());
+//    }
 
     // Endpoint to get all pending leave requests
     @GetMapping("/pending")

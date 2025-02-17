@@ -1,51 +1,62 @@
 import { createReducer, on } from '@ngrx/store';
-import { loadLeaveRequestsSuccess, loadLeaveRequestsFailure, approveLeaveRequest, rejectLeaveRequest, approveLeaveRequestSuccess, rejectLeaveRequestSuccess } from './leave.actions';
+import { LeaveRequest } from '../models/leave-request.model';
+import { loadLeaveRequestsSuccess, loadLeaveRequestsFailure, createLeaveRequestSuccess, createLeaveRequestFailure, approveLeaveRequestSuccess, approveLeaveRequestFailure, rejectLeaveRequestSuccess, rejectLeaveRequestFailure, createLeaveRequest } from './leave.actions';
 
-export interface LeaveState {
-  leaveRequests: any[];
+export interface LeaveRequestState {
+  leaveRequests: LeaveRequest[];
+  loading: boolean;
   error: string | null;
 }
 
-export const initialState: LeaveState = {
+export const initialState: LeaveRequestState = {
   leaveRequests: [],
+  loading: false,
   error: null
 };
 
-export const leaveReducer = createReducer(
+export const leaveRequestReducer = createReducer(
   initialState,
+  // Load leave requests actions
   on(loadLeaveRequestsSuccess, (state, { leaveRequests }) => ({
     ...state,
     leaveRequests,
-    error: null
+    loading: false
   })),
   on(loadLeaveRequestsFailure, (state, { error }) => ({
     ...state,
+    error,
+    loading: false
+  })),
+
+  on(createLeaveRequest, (state, { }) => ({
+    ...state,
+    // Optionally, add the new leave request to the state or handle loading
+  })),
+  on(createLeaveRequestSuccess, (state, { leaveRequest }) => ({
+    ...state,
+    leaveRequests: [...state.leaveRequests, leaveRequest],
+  })),
+  on(createLeaveRequestFailure, (state, { error }) => ({
+    ...state,
     error
   })),
-  on(approveLeaveRequest, (state, { requestId }) => ({
+
+  on(approveLeaveRequestSuccess, (state, { approval, requestId }) => ({
     ...state,
-    leaveRequests: state.leaveRequests.map(request =>
-      request.id === requestId ? { ...request, status: 'Approved' } : request
+    leaveRequests: state.leaveRequests.map(req =>
+      req.id === requestId ? { ...req, status: 'Approved', comment: approval.comment } : req
     )
   })),
-  on(rejectLeaveRequest, (state, { requestId }) => ({
+
+  on(rejectLeaveRequestSuccess, (state, { approval, requestId }) => ({
     ...state,
-    leaveRequests: state.leaveRequests.map(request =>
-      request.id === requestId ? { ...request, status: 'Rejected' } : request
+    leaveRequests: state.leaveRequests.map(req =>
+      req.id === requestId ? { ...req, status: 'Rejected', comment: approval.comment } : req
     )
   })),
-  on(approveLeaveRequestSuccess, (state, { requestId }) => {
-    return {
-      ...state,
-      leaveRequests: state.leaveRequests.filter(req => req.id !== requestId)
-    };
-  }),
 
-  on(rejectLeaveRequestSuccess, (state, { requestId }) => {
-    return {
-      ...state,
-      leaveRequests: state.leaveRequests.filter(req => req.id !== requestId)
-    };
-  }),
-
+  on(rejectLeaveRequestFailure, (state, { error }) => ({
+    ...state,
+    error
+  }))
 );

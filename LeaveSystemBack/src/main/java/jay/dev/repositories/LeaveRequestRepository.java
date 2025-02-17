@@ -18,7 +18,7 @@ public interface LeaveRequestRepository extends JpaRepository<LeaveRequest, Long
 
     List<LeaveRequest> findByStartDateBetween(LocalDate startDate, LocalDate endDate);
 
-    @Query("SELECT COUNT(l) FROM LeaveRequest l WHERE l.user.id = :userId AND l.status = 'Pending'")
+    @Query("SELECT COUNT(l) FROM LeaveRequest l WHERE l.user.id = :userId AND l.status = 'รออนุมัติ'")
     long countPendingLeavesByUserId(@Param("userId") Long userId);
 
     List<LeaveRequest> findByStartDateBetweenAndStatus(LocalDate startDate, LocalDate endDate, String status);

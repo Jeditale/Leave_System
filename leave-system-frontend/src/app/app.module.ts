@@ -25,11 +25,11 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
-import { leaveReducer } from './store/leave.reducer';
-import { LeaveEffects } from './store/leave.effects';
+import {LeaveRequestEffects } from './store/leave.effects';
 import { HttpClientModule, provideHttpClient, withFetch } from '@angular/common/http';
 import { LeaveRequestService } from './services/leave.service';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { leaveRequestReducer } from './store/leave.reducer';
 
 export const MY_DATE_FORMATS = {
   display: {
@@ -69,10 +69,10 @@ export const MY_DATE_FORMATS = {
     MatDialogModule,
     MatPaginatorModule,
     NgxChartsModule,
-    StoreModule.forRoot({ leave: leaveReducer }),
-    EffectsModule.forRoot([LeaveEffects]),
+    StoreModule.forRoot({ leaveRequestState: leaveRequestReducer }),
+    EffectsModule.forRoot([LeaveRequestEffects]),
     HttpClientModule,
-    EffectsModule.forFeature([LeaveEffects]),
+
     MatProgressSpinnerModule
 
 

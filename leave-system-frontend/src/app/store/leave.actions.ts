@@ -1,39 +1,59 @@
 import { createAction, props } from '@ngrx/store';
+import { LeaveRequest } from '../models/leave-request.model';
+import { Approval } from '../models/leave-request-approval.model';
+import { CreateRequest } from '../models/create-requset-form.model';
 
-export const loadLeaveRequests = createAction(
-  '[Leave] Load Leave Requests'
-);
-
+// Load leave requests actions
+export const loadLeaveRequests = createAction('[LeaveRequest] Load Leave Requests');
 export const loadLeaveRequestsSuccess = createAction(
-  '[Leave] Load Leave Requests Success',
-  props<{ leaveRequests: any[] }>()
+  '[LeaveRequest] Load Leave Requests Success',
+  props<{ leaveRequests: LeaveRequest[] }>()
 );
-
 export const loadLeaveRequestsFailure = createAction(
-  '[Leave] Load Leave Requests Failure',
+  '[LeaveRequest] Load Leave Requests Failure',
   props<{ error: any }>()
 );
 
+// Create leave request actions
+export const createLeaveRequest = createAction(
+  '[LeaveRequest] Create Leave Request',
+  props<{ createRequest: CreateRequest }>()
+);
+
+export const createLeaveRequestSuccess = createAction(
+  '[LeaveRequest] Create Leave Request Success',
+  props<{ leaveRequest: CreateRequest }>()
+);
+
+export const createLeaveRequestFailure = createAction(
+  '[LeaveRequest] Create Leave Request Failure',
+  props<{ error: any }>()
+);
+
+// Approve leave request actions
 export const approveLeaveRequest = createAction(
-  '[Leave] Approve Leave Request',
-  props<{ requestId: number }>()
-);
-
-export const rejectLeaveRequest = createAction(
-  '[Leave] Reject Leave Request',
-  props<{ requestId: number, comment: string }>()
-);
-
-export const leaveRequestFailure = createAction(
-  '[Leave Approval] Leave Request Failure',
-  props<{ error: string }>()
+  '[LeaveRequest] Approve Leave Request',
+  props<{ requestId: number , comment:string}>()
 );
 export const approveLeaveRequestSuccess = createAction(
-  '[Leave Approval] Approve Leave Request Success',
-  props<{ requestId: number }>()
+  '[LeaveRequest] Approve Leave Request Success',
+  props<{ approval: Approval, requestId: number  }>()
+);
+export const approveLeaveRequestFailure = createAction(
+  '[LeaveRequest] Approve Leave Request Failure',
+  props<{ error: any }>()
 );
 
+// Reject leave request actions
+export const rejectLeaveRequest = createAction(
+  '[LeaveRequest] Reject Leave Request',
+  props<{ requestId: number, comment: string }>()
+);
 export const rejectLeaveRequestSuccess = createAction(
-  '[Leave Approval] Reject Leave Request Success',
-  props<{ requestId: number }>()
+  '[LeaveRequest] Reject Leave Request Success',
+  props<{ approval: Approval, requestId: number }>()
+);
+export const rejectLeaveRequestFailure = createAction(
+  '[LeaveRequest] Reject Leave Request Failure',
+  props<{ error: any }>()
 );

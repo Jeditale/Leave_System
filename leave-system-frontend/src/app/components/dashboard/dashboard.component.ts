@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { LeaveRequestService } from '../../services/leave.service';
+import { Store } from '@ngrx/store';
 
 @Component({
   selector: 'app-dashboard',
@@ -12,11 +13,12 @@ export class DashboardComponent implements OnInit {
   usedLeaveThisYear: number = 0;
   recentLeaves: any[] = [];
 
-  constructor(private readonly leaveService: LeaveRequestService) {}
+  constructor(private readonly leaveService: LeaveRequestService,private store: Store) {}
 
   ngOnInit(): void {
     const userId = 1; //locked to 1 because no login
 
+    this.store.dispatch()
     // Get leave balance for the user
     this.leaveService.getLeaveBalance(userId).subscribe(
       balance => this.leaveBalance = balance,
@@ -50,7 +52,7 @@ export class DashboardComponent implements OnInit {
         // Count only "Approved" leaves that started this year
         this.usedLeaveThisYear = data
           .filter((leave: any) =>
-            leave.status === "Approved" &&
+            leave.status === "อนุมัติแล้ว" &&
             new Date(leave.startDate).getFullYear() === currentYear
           )
           .reduce((sum: number, leave: any) => sum + this.calculateLeaveDays(leave.startDate, leave.endDate), 0);

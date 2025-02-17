@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { LeaveRequestService } from '../../services/leave.service';
+import { Store } from '@ngrx/store';
+import { createLeaveRequest } from '../../store/leave.actions';
 
 @Component({
   selector: 'app-leave-request',
@@ -12,33 +13,31 @@ export class LeaveRequestFormComponent {
   endDateValue: Date | null = null;
   leaveReason: string = '';
 
-  constructor(private readonly leaveService: LeaveRequestService) {}
+  constructor(private store: Store) {}
 
   submitRequest() {
+    if (this.leaveType === null) {
+      console.error('Leave type is required');
+      return;
+    }
     const leaveData = {
       user: { id: 1 }, //1 because no login
       leaveType: { id: this.leaveType },
-      startDate: this.startDateValue,
-      endDate: this.endDateValue,
+      startDate: this.startDateValue ? this.startDateValue.toISOString() : '',
+      endDate: this.endDateValue ? this.endDateValue.toISOString() : '',
       status: 'รออนุมัติ',
       reason: this.leaveReason,
-      comment: ''
+      // comment: ''
     };
 
-    this.leaveService.createLeaveRequest(leaveData).subscribe(
-      response => {
 
-
+    this.store.dispatch(createLeaveRequest({createRequest:leaveData}))
         // Clear input fields after successful submission
         this.leaveType = null;
         this.startDateValue = null;
         this.endDateValue = null;
         this.leaveReason = '';
-      },
-      error => {
-        console.error('Error submitting leave request:', error);
-      }
-    );
+
   }
 
 

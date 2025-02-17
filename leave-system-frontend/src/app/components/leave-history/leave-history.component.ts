@@ -27,7 +27,6 @@ export class LeaveHistoryComponent implements OnInit {
   selectedStatus: string = 'อนุมัติแล้ว';
   chosenYear: number | null = null;
 
-
   departments = ['HR', 'การเงิน', 'IT', 'ทั้งหมด'];
   leaveTypes = ['ลาป่วย', 'ลาพักร้อน', 'ลากิจ', 'ลาคลอด', 'ทั้งหมด'];
   statuses = ['อนุมัติแล้ว', 'รอดำเนินการ', 'ถูกปฏิเสธ', 'ทั้งหมด'];
@@ -54,8 +53,6 @@ export class LeaveHistoryComponent implements OnInit {
     datepicker.close();
     this.filterData();  // Update data when month/year is selected
   }
-
-
 
   // Handles year selection
   chosenYearHandler(normalizedYear: Date) {
@@ -114,8 +111,6 @@ export class LeaveHistoryComponent implements OnInit {
     const startDate = new Date(dayStart);
     const endDate = new Date(dayEnd);
 
-
-
     // Ensure valid date conversion
     if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
       console.error('Invalid date format:', { dayStart, dayEnd });
@@ -125,13 +120,8 @@ export class LeaveHistoryComponent implements OnInit {
     // Calculate the difference in milliseconds
     const diffTime = endDate.getTime() - startDate.getTime();
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
-
-
-
     return diffDays > 0 ? diffDays : 0; // Ensure non-negative days
   }
-
-
 
   // Update chart data based on the leave statistics
   updateChartData(stats: any) {
@@ -142,6 +132,7 @@ export class LeaveHistoryComponent implements OnInit {
       { name: 'ลาคลอด', value: stats['ลาคลอด'] || 0 }
     ];
   }
+
   // Export leave data to Excel
   exportToExcel() {
     const month = this.selectedMonthYear.getMonth() + 1; // Month is 0-indexed
@@ -167,22 +158,15 @@ export class LeaveHistoryComponent implements OnInit {
       const link = document.createElement('a');
       const fileURL = URL.createObjectURL(blob);
       link.href = fileURL;
-      link.download = `LeaveData_${year}_${month}.xlsx`;
+      link.download = `LeaveHistory_${year}_${month}.xlsx`;
 
-      // Append to the body, trigger click, then remove
+      //trigger click, then remove
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-
-      // Clean up
       URL.revokeObjectURL(fileURL);
     });
   }
-
-
-
-
-
 }
 
 

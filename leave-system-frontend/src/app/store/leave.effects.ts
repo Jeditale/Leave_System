@@ -1,58 +1,64 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { LeaveRequestService } from '../services/leave.service';
-import {
-  loadLeaveRequests,
-  loadLeaveRequestsSuccess,
-  loadLeaveRequestsFailure,
-  approveLeaveRequest,
-  rejectLeaveRequest
+import { mergeMap, map, catchError, of } from 'rxjs';
+import { 
+  loadLeaveRequests, loadLeaveRequestsSuccess, loadLeaveRequestsFailure, 
+  createLeaveRequest, createLeaveRequestSuccess, createLeaveRequestFailure, 
+  approveLeaveRequest, approveLeaveRequestSuccess, approveLeaveRequestFailure, 
+  rejectLeaveRequest, rejectLeaveRequestSuccess, rejectLeaveRequestFailure 
 } from './leave.actions';
-import { catchError, map, mergeMap } from 'rxjs/operators';
-import { EMPTY, of } from 'rxjs';
+import { LeaveRequestService } from '../services/leave.service';
 
 @Injectable()
-export class LeaveEffects {
+export class LeaveRequestEffects {
+  private actions$ = inject(Actions);
+  private leaveService = inject(LeaveRequestService);
 
-  // loadLeaveRequests$ = createEffect(() =>
-  //   this.actions$.pipe(
-  //     ofType(loadLeaveRequests),
-  //     mergeMap(() =>
-  //       this.leaveService.getLeaveRequests().pipe(
-  //         map(leaveRequests => loadLeaveRequestsSuccess({ leaveRequests })),
-  //         catchError(() => EMPTY)
-  //       )
-  //     )
-  //   )
-  // );
+  loadLeaveRequests$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(loadLeaveRequests),
+      mergeMap(() =>
+        this.leaveService.getLeaveRequests().pipe(
+          map(leaveRequests => loadLeaveRequestsSuccess({ leaveRequests })),
+          catchError(error => of(loadLeaveRequestsFailure({ error })))
+        )
+      )
+    )
+  );
 
-  // approveLeaveRequest$ = createEffect(() =>
-  //   this.actions$.pipe(
-  //     ofType(approveLeaveRequest),
-  //     mergeMap(action =>
-  //       this.leaveService.approveLeaveRequest(action.requestId).pipe(
-  //         map(() => loadLeaveRequests()), // FIXED: Reload leave requests after update
-  //         catchError(error => of(loadLeaveRequestsFailure({ error }))) // FIXED: Ensure import
-  //       )
-  //     )
-  //   )
-  // );
+  createLeaveRequest$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(createLeaveRequest),
+      mergeMap(({ createRequest }) =>
+        this.leaveService.createLeaveRequest(createRequest).pipe(
+          map(response => createLeaveRequestSuccess({ leaveRequest: response })),
+          catchError(error => of(createLeaveRequestFailure({ error: error.message })))
+        )
+      )
+    )
+  );
 
-  // rejectLeaveRequest$ = createEffect(() =>
-  //   this.actions$.pipe(
-  //     ofType(rejectLeaveRequest),
-  //     mergeMap(action =>
-  //       this.leaveService.rejectLeaveRequest(action.requestId, action.comment).pipe(
-  //         map(() => loadLeaveRequests()), // FIXED: Reload leave requests after update
-  //         catchError(error => of(loadLeaveRequestsFailure({ error }))) // FIXED: Ensure import
-  //       )
-  //     )
-  //   )
-  // );
+  approveLeaveRequest$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(approveLeaveRequest),
+      mergeMap(({ requestId }) =>
+        this.leaveService.approveLeaveRequest(requestId).pipe(
+          map(approval => approveLeaveRequestSuccess({ approval, requestId })),
+          catchError(error => of(approveLeaveRequestFailure({ error })))
+        )
+      )
+    )
+  );
 
-  constructor(
-    private readonly actions$: Actions,
-    private readonly leaveService: LeaveRequestService, // FIXED: Ensure this service is injected
-
-  ) {}
+  rejectLeaveRequest$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(rejectLeaveRequest),
+      mergeMap(({ requestId, comment }) =>
+        this.leaveService.rejectLeaveRequest(requestId, comment).pipe(
+          map(approval => rejectLeaveRequestSuccess({ approval, requestId })),
+          catchError(error => of(rejectLeaveRequestFailure({ error })))
+        )
+      )
+    )
+  );
 }
