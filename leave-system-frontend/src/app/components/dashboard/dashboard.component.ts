@@ -18,7 +18,6 @@ export class DashboardComponent implements OnInit {
   ngOnInit(): void {
     const userId = 1; //locked to 1 because no login
 
-    this.store.dispatch()
     // Get leave balance for the user
     this.leaveService.getLeaveBalance(userId).subscribe(
       balance => this.leaveBalance = balance,

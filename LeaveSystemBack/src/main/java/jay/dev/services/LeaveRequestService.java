@@ -141,4 +141,38 @@ public class LeaveRequestService {
         return leaveRequestRepository.findByUserId(userId);
     }
 
+
+    public Map<String, Integer> getApprovedLeaveStats(Long userId, int month, int year) {
+        // Define the start and end date for the given month and year
+        LocalDate startDate = LocalDate.of(year, month, 1);
+        LocalDate endDate = YearMonth.of(year, month).atEndOfMonth();
+
+        // Fetch approved leave requests for the user in the given month and year
+        List<LeaveRequest> leaveRequests = leaveRequestRepository.findByUserIdAndStatusAndStartDateBetween(userId, "อนุมัติแล้ว", startDate, endDate);
+
+        // Initialize a map to hold the leave counts for each type
+        Map<String, Integer> leaveStats = new HashMap<>();
+        leaveStats.put("ลาป่วย", 0);
+        leaveStats.put("ลาพักร้อน", 0);
+        leaveStats.put("ลากิจ", 0);
+        leaveStats.put("ลาคลอด", 0);
+
+        // Loop through the leave requests and count the days for each leave type
+        for (LeaveRequest leaveRequest : leaveRequests) {
+            String leaveTypeName = leaveRequest.getLeaveType().getName();
+
+            // If leave request matches a known leave type, calculate the leave days
+            if (leaveStats.containsKey(leaveTypeName)) {
+                // Calculate the number of days the leave request covers
+                long leaveDays = java.time.temporal.ChronoUnit.DAYS.between(leaveRequest.getStartDate(), leaveRequest.getEndDate()) + 1;
+                leaveStats.put(leaveTypeName, leaveStats.get(leaveTypeName) + (int) leaveDays);
+            }
+        }
+
+        // Add total leave days
+        int totalLeaveDays = leaveStats.values().stream().mapToInt(Integer::intValue).sum();
+        leaveStats.put("รวม", totalLeaveDays);
+
+        return leaveStats;
+    }
 }

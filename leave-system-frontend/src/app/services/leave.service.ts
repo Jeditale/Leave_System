@@ -51,8 +51,11 @@ export class LeaveRequestService {
 
   exportLeaveData(year: number, month: number): Observable<string> {
     return this.http.get(`http://localhost:5300/api/leave-requests/export/${year}/${month}`, {
-      responseType: 'text'  // 👈 Important! Expecting a Base64 string, not JSON.
+      responseType: 'text'  // Important! Expecting a Base64 string, not JSON.
     });
+  }
+  getLeaveStatsTable(userId: number, month: number, year: number): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/stats/${userId}/${month}/${year}`);
   }
 
 }

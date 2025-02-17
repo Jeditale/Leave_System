@@ -23,5 +23,6 @@ public interface LeaveRequestRepository extends JpaRepository<LeaveRequest, Long
 
     List<LeaveRequest> findByStartDateBetweenAndStatus(LocalDate startDate, LocalDate endDate, String status);
 
+    List<LeaveRequest> findByUserIdAndStatusAndStartDateBetween(Long userId, String status, LocalDate startDate, LocalDate endDate);
 }
 

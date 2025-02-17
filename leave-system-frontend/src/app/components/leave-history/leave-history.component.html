@@ -29,25 +29,11 @@
           <mat-option *ngFor="let dept of departments" [value]="dept">{{ dept }}</mat-option>
         </mat-select>
       </mat-form-field>
-
-      <mat-form-field appearance="fill">
-        <mat-label>ประเภทการลา</mat-label>
-        <mat-select [(ngModel)]="selectedLeaveType" (selectionChange)="filterData()">
-          <mat-option *ngFor="let type of leaveTypes" [value]="type">{{ type }}</mat-option>
-        </mat-select>
-      </mat-form-field>
-
-      <mat-form-field appearance="fill">
-        <mat-label>สถานะ</mat-label>
-        <mat-select [(ngModel)]="selectedStatus" (selectionChange)="filterData()">
-          <mat-option *ngFor="let status of statuses" [value]="status">{{ status }}</mat-option>
-        </mat-select>
-      </mat-form-field>
     </div>
 
     <div class="chart-container">
       <ngx-charts-bar-vertical
-        [view]="[1500,300]"
+        [view]="[1500, 300]"
         [results]="leaveStatsData"
         [scheme]="colorScheme"
         [xAxis]="true"
@@ -60,27 +46,37 @@
 
     <mat-table [dataSource]="filteredLeaveData">
       <ng-container matColumnDef="userName">
-        <mat-header-cell *matHeaderCellDef>พนักงาน</mat-header-cell>
+        <mat-header-cell *matHeaderCellDef>ชื่อ</mat-header-cell>
         <mat-cell *matCellDef="let element">{{ element.user.username }}</mat-cell>
       </ng-container>
-
-      <ng-container matColumnDef="leaveType">
-        <mat-header-cell *matHeaderCellDef>ประเภทการลา</mat-header-cell>
-        <mat-cell *matCellDef="let element">{{ element.leaveType.name }}</mat-cell>
+    
+      <ng-container matColumnDef="department">
+        <mat-header-cell *matHeaderCellDef>แผนก</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{ element.user.department }}</mat-cell>
       </ng-container>
-
-      <ng-container matColumnDef="daysTaken">
-        <mat-header-cell *matHeaderCellDef>วันลาที่ใช้</mat-header-cell>
-        <mat-cell *matCellDef="let element">{{ element.daysTaken }} วัน</mat-cell>
+    
+      <ng-container matColumnDef="sickLeave">
+        <mat-header-cell *matHeaderCellDef>ลาป่วย</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{ element.sickLeave }}</mat-cell>
       </ng-container>
-
-      <ng-container matColumnDef="status">
-        <mat-header-cell *matHeaderCellDef>สถานะ</mat-header-cell>
-        <mat-cell *matCellDef="let element">{{ element.status }}</mat-cell>
+    
+      <ng-container matColumnDef="vacationLeave">
+        <mat-header-cell *matHeaderCellDef>ลาพักร้อน</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{ element.vacationLeave }}</mat-cell>
       </ng-container>
-
+    
+      <ng-container matColumnDef="emergencyLeave">
+        <mat-header-cell *matHeaderCellDef>ลากิจ</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{ element.emergencyLeave }}</mat-cell>
+      </ng-container>
+    
+      <ng-container matColumnDef="totalDaysOff">
+        <mat-header-cell *matHeaderCellDef>รวม</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{ element.totalDaysOff }}</mat-cell>
+      </ng-container>
+    
       <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-      <mat-row *matRowDef="let row; columns: displayedColumns;"  style="cursor: pointer;"></mat-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;" style="cursor: pointer;"></mat-row>
     </mat-table>
 
     <mat-paginator [length]="totalItems" [pageSize]="pageSize"></mat-paginator>

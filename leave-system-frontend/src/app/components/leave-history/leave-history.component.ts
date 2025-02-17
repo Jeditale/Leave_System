@@ -15,7 +15,7 @@ export class LeaveHistoryComponent implements OnInit {
     this.filterData();  // Fetch initial data on load
   }
 
-  displayedColumns: string[] = ['userName', 'leaveType', 'daysTaken', 'status'];
+  displayedColumns: string[] = ['userName', 'department', 'sickLeave', 'vacationLeave', 'emergencyLeave', 'totalDaysOff'];
   leaveData: any[] = [];
   filteredLeaveData: any[] = [];
   totalItems = 0;
@@ -23,13 +23,11 @@ export class LeaveHistoryComponent implements OnInit {
 
   selectedMonthYear: Date = new Date();
   selectedDepartment: string = 'ทั้งหมด';
-  selectedLeaveType: string = 'ทั้งหมด';
-  selectedStatus: string = 'อนุมัติแล้ว';
   chosenYear: number | null = null;
 
   departments = ['HR', 'การเงิน', 'IT', 'ทั้งหมด'];
   leaveTypes = ['ลาป่วย', 'ลาพักร้อน', 'ลากิจ', 'ลาคลอด', 'ทั้งหมด'];
-  statuses = ['อนุมัติแล้ว', 'รอดำเนินการ', 'ถูกปฏิเสธ', 'ทั้งหมด'];
+
   // Chart Data
   leaveStatsData = [
     { name: 'ลาป่วย', value: 0 },
@@ -57,7 +55,6 @@ export class LeaveHistoryComponent implements OnInit {
   // Handles year selection
   chosenYearHandler(normalizedYear: Date) {
     this.chosenYear = normalizedYear.getFullYear(); // Store selected year
-
     this.filterData();  // Update data when year is selected
   }
 
@@ -70,38 +67,46 @@ export class LeaveHistoryComponent implements OnInit {
     }
 
     datepicker.close(); // Close the picker after selection
-
     this.filterData();  // Update data when month is selected
   }
 
   // Filter data based on selections (Leave Type, Status, Department)
-  filterData() {
-    const month = this.selectedMonthYear.getMonth() + 1;  // Month is 0-indexed
-    const year = this.selectedMonthYear.getFullYear();
+// Filter data based on selections (Leave Type, Status, Department)
+filterData() {
+  const month = this.selectedMonthYear.getMonth() + 1;  // Month is 0-indexed
+  const year = this.selectedMonthYear.getFullYear();
 
-    // Fetch leave statistics for the selected year and month
-    this.leaveService.getLeaveStats(year, month).subscribe(stats => {
-      this.updateChartData(stats);
+  // Fetch leave statistics for the selected year and month
+  this.leaveService.getLeaveStats(year, month).subscribe(stats => {
+    this.updateChartData(stats);
+  });
+
+  this.leaveService.getLeaveStatsTable(1, month, year).subscribe(data => {
+    // Mapping data to include a user object and leave stats
+    this.leaveData = [
+      {
+        user: { username: 'Jd123', department: 'IT' },  // Example user data, replace with dynamic values
+        sickLeave: data['ลาป่วย'],
+        vacationLeave: data['ลาพักร้อน'],
+        emergencyLeave: data['ลากิจ'],
+        totalDaysOff: data['รวม'],
+        maternityLeave: data['ลาคลอด']
+      }
+    ];
+
+    // Filter data based on department and leave type selection
+    this.filteredLeaveData = this.leaveData.filter(item => {
+      const departmentFilter = this.selectedDepartment === 'ทั้งหมด' || item.user.department === this.selectedDepartment;
+
+      // Add additional filtering based on leave type here if needed
+      const leaveTypeFilter = this.leaveTypes.includes('ทั้งหมด') || item.sickLeave || item.vacationLeave || item.emergencyLeave || item.maternityLeave;
+
+      return departmentFilter && leaveTypeFilter;
     });
+  });
+}
 
-    // Fetch leave requests based on filters
-    this.leaveService.getLeaveRequests().subscribe(leaveRequests => {
-      this.leaveData = leaveRequests
-        .filter(leave =>
-          (this.selectedLeaveType === 'ทั้งหมด' || leave.leaveType.name === this.selectedLeaveType) &&
-          (this.selectedStatus === 'ทั้งหมด' || leave.status === this.selectedStatus) &&
-          (this.selectedDepartment === 'ทั้งหมด' || leave.user.department === this.selectedDepartment)
-        )
 
-        .map(leave => ({
-          ...leave,
-          daysTaken: this.calculateDaysTaken(leave.startDate, leave.endDate) // Compute days
-        }));
-
-      this.filteredLeaveData = [...this.leaveData];
-      this.totalItems = this.leaveData.length;  // Update total item count
-    });
-  }
   calculateDaysTaken(dayStart: string, dayEnd: string): number {
     if (!dayStart || !dayEnd) {
       console.warn('Missing date values:', { dayStart, dayEnd });
@@ -168,5 +173,3 @@ export class LeaveHistoryComponent implements OnInit {
     });
   }
 }
-
-

@@ -104,4 +104,11 @@ public class LeaveRequestController {
         return leaveRequestService.getLeaveRequestsByUserId(userId);
     }
 
+    @GetMapping("/stats/{userId}/{month}/{year}")
+    public Map<String, Integer> getLeaveStats(
+            @PathVariable Long userId,
+            @PathVariable int month,
+            @PathVariable int year) {
+        return leaveRequestService.getApprovedLeaveStats(userId, month, year);
+    }
 }
