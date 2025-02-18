@@ -1,4 +1,4 @@
-# Release Notes - v1.0.1 - 2025-02-14
+# Release Notes - v1.0.2 - 2025-02-18
 
 ## Overview
 ### This release is init release bugs fixes will comes afterward
@@ -8,27 +8,22 @@
 
 ### Fixed Bugs:
 
--Not yet
+- **[LEAVE-001]**: Bug in leave.effect
+  **Ive added store feature for post methods**
 
 ---
 
 ## Known Issues
 
-- **[LEAVE-001]**: Bug in leave.effect
-  **Workaround**: None available at this time.
-  but I have commented out the functions currently call api directly from service
-
-- **[LEAVE-002]**:Unfinished UI
-- **[WHY?]**: Even for me its not well enough but I will try to workaround for better UI
-
--**[LEAVE-003]**:Intergration Testing missing
+- **[LEAVE-002]**:Unfinished UI<br>
+  **[WHY?]**: Even for me its not well enough but I will try to workaround for better UI<br> 
+  **[Stoped working on Because due to time limit by myself]**
+- **[LEAVE-003]**:Intergration Testing missing
 ---
 
 ## Future Updates
 
-- The next update (v1.0.2) will address:
-- Fixing bug **[Leave-001]**
-- UI **[LEAVE-002]***
+The next update (v1.0.2) will address:
 - Test files **[LEAVE-003]**
 ---
 

@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { LeaveRequestService } from '../../services/leave.service';
+import { Store } from '@ngrx/store';
+import { approveLeaveRequest, rejectLeaveRequest } from '../../store/leave.actions';
 @Component({
   selector: 'app-leave-approval',
   templateUrl: './leave-approval.component.html',
@@ -17,7 +19,8 @@ export class LeaveApprovalComponent implements OnInit {
   selectedLeaveRequest: any = null;
   comment: string = '';
 
-  constructor(private readonly leaveService: LeaveRequestService) {}
+  constructor(private readonly leaveService: LeaveRequestService,
+    private readonly store : Store) {}
 
   ngOnInit(): void {
     this.loadLeaveRequests();
@@ -63,31 +66,22 @@ export class LeaveApprovalComponent implements OnInit {
 
   approveRequest() {
     if (this.selectedLeaveRequest) {
-      this.leaveService.approveLeaveRequest(this.selectedLeaveRequest.id).subscribe(
-        () => {
-
+      this.store.dispatch(approveLeaveRequest({requestId:this.selectedLeaveRequest.id,
+        comment: this.comment
+      }))
           this.selectedLeaveRequest = null;
           this.loadLeaveRequests(); // Reload requests after approval
-        },
-        (error) => {
-          console.error('Error approving leave request', error);
-        }
-      );
     }
   }
 
+
   rejectRequest() {
     if (this.selectedLeaveRequest) {
-      this.leaveService.rejectLeaveRequest(this.selectedLeaveRequest.id, this.comment).subscribe(
-        () => {
-
+      this.store.dispatch(rejectLeaveRequest({requestId:this.selectedLeaveRequest.id,
+        comment:this.comment
+      }))
           this.selectedLeaveRequest = null;
           this.loadLeaveRequests(); // Reload requests after rejection
-        },
-        (error) => {
-          console.error('Error rejecting leave request', error);
-        }
-      );
     }
   }
 }

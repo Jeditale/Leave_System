@@ -72,7 +72,6 @@ export const MY_DATE_FORMATS = {
     StoreModule.forRoot({ leaveRequestState: leaveRequestReducer }),
     EffectsModule.forRoot([LeaveRequestEffects]),
     HttpClientModule,
-
     MatProgressSpinnerModule
 
 
