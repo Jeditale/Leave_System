@@ -1,7 +1,7 @@
 # Release Notes - v1.0.2 - 2025-02-18
 
 ## Overview
-### This release is init release bugs fixes will comes afterward
+### This is version that fixed the leave effect bugs
 ---
 
 ## Bug Fixes
@@ -19,13 +19,12 @@
   **[WHY?]**: Even for me its not well enough but I will try to workaround for better UI<br> 
   **[Stoped working on Because due to time limit by myself]**
 - **[LEAVE-003]**:Intergration Testing missing
+ **[Stoped working on Because due to time limit by myself]**
 ---
 
 ## Future Updates
 
-The next update (v1.0.2) will address:
-- Test files **[LEAVE-003]**
 ---
 
 ## Predict fix date 
--Tuesday 2025-02-18
+
