@@ -5,9 +5,9 @@ This guide will walk you through setting up and running both the backend and fro
 ## Before you begin, ensure you have the following installed:
 
 - **Docker** and **Docker Compose**: To run both the frontend and backend containers.
-- **Node.js**: To run the frontend if you're not using Docker.
-- **Java**: For the backend (Spring Boot).
-- **Maven**: To build the Spring Boot backend application.
+- **Node.js v20.11.1**
+- **Java openjdk 17.0.13**: For the backend (Spring Boot).
+- **Maven 3.9.8**: To build the Spring Boot backend application.
 
 ## Project Structure
 
