@@ -12,6 +12,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.ResponseEntity;
 
+import jakarta.persistence.EntityNotFoundException;
+
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -141,6 +143,40 @@ class LeaveRequestControllerTest {
         doNothing().when(leaveRequestService).rejectLeave(anyLong(), any(LeaveRequest.class));
         ResponseEntity<String> response = leaveRequestController.rejectLeave(1L, sampleLeaveRequest);
         verify(leaveRequestService).rejectLeave(1L, sampleLeaveRequest);
+    }
+
+    @Test
+    void shouldReturn404WhenApprovingNonExistentLeave() {
+        // Setup
+        Long nonExistentId = 999L;
+        LeaveRequest request = new LeaveRequest();
+        doThrow(new EntityNotFoundException("Leave request not found"))
+            .when(leaveRequestService).approveLeave(nonExistentId, request);
+
+        // Execute
+        ResponseEntity<String> response = leaveRequestController.approveLeave(nonExistentId, request);
+
+        // Verify
+        assertEquals(404, response.getStatusCodeValue());
+        assertEquals("Leave request not found", response.getBody());
+        verify(leaveRequestService).approveLeave(nonExistentId, request);
+    }
+
+    @Test
+    void shouldReturn404WhenRejectingNonExistentLeave() {
+        // Setup
+        Long nonExistentId = 999L;
+        LeaveRequest request = new LeaveRequest();
+        doThrow(new EntityNotFoundException("Leave request not found"))
+            .when(leaveRequestService).rejectLeave(nonExistentId, request);
+
+        // Execute
+        ResponseEntity<String> response = leaveRequestController.rejectLeave(nonExistentId, request);
+
+        // Verify
+        assertEquals(404, response.getStatusCodeValue());
+        assertEquals("Leave request not found", response.getBody());
+        verify(leaveRequestService).rejectLeave(nonExistentId, request);
     }
 
     @Test

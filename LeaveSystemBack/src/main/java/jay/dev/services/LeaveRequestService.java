@@ -19,9 +19,9 @@ public class LeaveRequestService {
     private LeaveRequestRepository leaveRequestRepo;
 
     public enum LeaveStatus {
-        PENDING("Pending"),
-        APPROVED("Approved"),
-        REJECTED("Rejected");
+        PENDING("รออนุมัติ"),
+        APPROVED("อนุมัติแล้ว"),
+        REJECTED("ถูกปฏิเสธ");
 
         private final String status;
 
