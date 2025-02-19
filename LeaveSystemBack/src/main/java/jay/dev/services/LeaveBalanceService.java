@@ -7,9 +7,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class LeaveBalanceService {
     @Autowired
-    private LeaveBalanceRepository leaveBalanceRepository;
+    private LeaveBalanceRepository leaveBalanceRepo;
     public LeaveBalance getLeaveBalanceByUserId(Long userId) {
-        return leaveBalanceRepository.findByUserId(userId)
+        return leaveBalanceRepo.findByUserId(userId)
                 .stream().findFirst().orElseThrow(() -> new RuntimeException("Leave balance for user with ID " + userId + " not found"));
     }
 }

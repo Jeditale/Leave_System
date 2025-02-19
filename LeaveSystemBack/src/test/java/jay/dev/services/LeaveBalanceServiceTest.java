@@ -30,19 +30,14 @@ class LeaveBalanceServiceTest {
 
     @Test
     void shouldReturnBalanceWhenUserExists() {
-        // Arrange
         User user = new User();
         user.setId(1L);
-
         LeaveBalance expectedBalance = new LeaveBalance();
         expectedBalance.setUser(user);
         expectedBalance.setRemainingDays(10);
         when(leaveBalanceRepository.findByUserId(1L)).thenReturn(Collections.singletonList(expectedBalance));
-
-        // Act
         LeaveBalance actualBalance = leaveBalanceService.getLeaveBalanceByUserId(1L);
 
-        // Assert
         assertNotNull(actualBalance);
         assertEquals(1L, actualBalance.getUser().getId());
         assertEquals(expectedBalance.getRemainingDays(), actualBalance.getRemainingDays());
@@ -50,10 +45,7 @@ class LeaveBalanceServiceTest {
 
     @Test
     void shouldThrowExceptionWhenBalanceNotFound() {
-        // Arrange
         when(leaveBalanceRepository.findByUserId(anyLong())).thenReturn(Collections.emptyList());
-
-        // Act & Assert
         RuntimeException exception = assertThrows(RuntimeException.class, () -> 
             leaveBalanceService.getLeaveBalanceByUserId(1L)
         );

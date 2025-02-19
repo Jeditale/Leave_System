@@ -6,6 +6,9 @@ import jay.dev.services.LeaveRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import jakarta.persistence.EntityNotFoundException;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -70,16 +73,23 @@ public class LeaveRequestController {
     // Endpoint to approve a leave request
     @PostMapping("/approve/{id}")
     public ResponseEntity<String> approveLeave(@PathVariable Long id, @RequestBody LeaveRequest leaveRequest) {
-        leaveRequestService.approveLeave(id, leaveRequest);
-    //return ResponseEntity.ok("Leave approved successfully");
-        return null;
+        try {
+            leaveRequestService.approveLeave(id, leaveRequest);
+            return ResponseEntity.ok("Leave request approved successfully");
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(404).body("Leave request not found");
+        }
     }
 
     // Endpoint to reject a leave request
     @PostMapping("/reject/{id}")
     public ResponseEntity<String> rejectLeave(@PathVariable Long id, @RequestBody LeaveRequest leaveRequest) {
-        leaveRequestService.rejectLeave(id, leaveRequest);
-        return null;
+        try {
+            leaveRequestService.rejectLeave(id, leaveRequest);
+            return ResponseEntity.ok("Leave request rejected");
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(404).body("Leave request not found");
+        }
     }
 
     @GetMapping("/stats/{year}/{month}")

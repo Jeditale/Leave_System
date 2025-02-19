@@ -16,83 +16,94 @@ import java.util.*;
 public class LeaveRequestService {
 
     @Autowired
-    private LeaveRequestRepository leaveRequestRepository;
+    private LeaveRequestRepository leaveRequestRepo;
+
+    public enum LeaveStatus {
+        PENDING("Pending"),
+        APPROVED("Approved"),
+        REJECTED("Rejected");
+
+        private final String status;
+
+        LeaveStatus(String status) {
+            this.status = status;
+        }
+
+        public String getStatus() {
+            return status;
+        }
+    }
 
     public LeaveRequest createLeaveRequest(LeaveRequest leaveRequest) {
-        return leaveRequestRepository.save(leaveRequest);
+        return leaveRequestRepo.save(leaveRequest);
     }
 
     public List<LeaveRequest> getAllLeaveRequests() {
-        return leaveRequestRepository.findAll();
+        return leaveRequestRepo.findAll();
     }
 
     public LeaveRequest updateLeaveRequestStatus(Long id, String status) {
-        Optional<LeaveRequest> leaveRequestOptional = leaveRequestRepository.findById(id);
+        Optional<LeaveRequest> leaveRequestOptional = leaveRequestRepo.findById(id);
         if (leaveRequestOptional.isPresent()) {
             LeaveRequest leaveRequest = leaveRequestOptional.get();
             leaveRequest.setStatus(status);
-            return leaveRequestRepository.save(leaveRequest);
+            return leaveRequestRepo.save(leaveRequest);
         }
         return null;
     }
 
     public long countPendingLeaveRequests(Long userId) {
-        return leaveRequestRepository.countByStatusAndUserId("Pending", userId);
+        return leaveRequestRepo.countByStatusAndUserId("Pending", userId);
     }
 
     public long countThisYearLeave(Long userId, String status) {
-        return leaveRequestRepository.countByUserIdAndStatusAndStartDateAfter(userId, status, LocalDate.now().withDayOfYear(1));
+        return leaveRequestRepo.countByUserIdAndStatusAndStartDateAfter(userId, status, LocalDate.now().withDayOfYear(1));
     }
 
     // Get all pending leave requests
     public List<LeaveRequest> getPendingRequests() {
-        return leaveRequestRepository.findByStatus("รออนุมัติ");
+        return leaveRequestRepo.findByStatus(LeaveStatus.PENDING.getStatus());
     }
 
     // Approve a leave request
     public void approveLeave(Long id, LeaveRequest leaveRequest) {
-        LeaveRequest request = leaveRequestRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("LeaveRequest with id " + id + " not found"));
-        request.setStatus("อนุมัติแล้ว");
-        request.setComment(leaveRequest.getComment()); // Store comment
-        leaveRequestRepository.save(request);
+        LeaveRequest request = leaveRequestRepo.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Leave request not found"));
+        request.setStatus(LeaveStatus.APPROVED.getStatus());
+        request.setComment(leaveRequest.getComment());
+        leaveRequestRepo.save(request);
     }
 
     // Reject a leave request
     public void rejectLeave(Long id, LeaveRequest leaveRequest) {
-        LeaveRequest request = leaveRequestRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("LeaveRequest with id " + id + " not found"));
-        request.setStatus("ถูกปฏิเสธ");
-        request.setComment(leaveRequest.getComment()); // Store comment
-        leaveRequestRepository.save(request);
-    }
-    public long getPendingLeaveCount(Long userId) {
-        return leaveRequestRepository.countPendingLeavesByUserId(userId);
+        LeaveRequest request = leaveRequestRepo.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Leave request not found"));
+        request.setStatus(LeaveStatus.REJECTED.getStatus());
+        request.setComment(leaveRequest.getComment());
+        leaveRequestRepo.save(request);
     }
 
+    public long getPendingLeaveCount(Long userId) {
+        return leaveRequestRepo.countPendingLeavesByUserId(userId);
+    }
 
     public Map<String, Integer> getLeaveStats(int year, int month) {
         LocalDate startDate = LocalDate.of(year, month, 1);
         LocalDate endDate = YearMonth.of(year, month).atEndOfMonth();
-
-        // Fetch only leave requests where the status is "อนุมัติแล้ว" (Approved)
-        List<LeaveRequest> leaves = leaveRequestRepository.findByStartDateBetweenAndStatus(startDate, endDate, "อนุมัติแล้ว");
-
+        List<LeaveRequest> leaves = leaveRequestRepo.findByStartDateBetweenAndStatus(
+            startDate, endDate, LeaveStatus.APPROVED.getStatus());
         Map<String, Integer> stats = new HashMap<>();
         for (LeaveRequest leave : leaves) {
             String leaveType = leave.getLeaveType().getName();
-            stats.put(leaveType, stats.getOrDefault(leaveType, 0) + 1);
+            stats.merge(leaveType, 1, Integer::sum);
         }
         return stats;
     }
 
-
     public String exportLeaveDataToExcel(int year, int month) throws IOException {
         LocalDate startDate = LocalDate.of(year, month, 1);
         LocalDate endDate = YearMonth.of(year, month).atEndOfMonth();
-
-        List<LeaveRequest> leaves = leaveRequestRepository.findByStartDateBetween(startDate, endDate);
-
+        List<LeaveRequest> leaves = leaveRequestRepo.findByStartDateBetween(startDate, endDate);
         Workbook workbook = new XSSFWorkbook();
         Sheet sheet = workbook.createSheet("Leave Report");
 
@@ -105,7 +116,6 @@ public class LeaveRequestService {
             cell.setCellStyle(getHeaderCellStyle(workbook));
         }
 
-        // Populate rows
         int rowIdx = 1;
         for (LeaveRequest leave : leaves) {
             Row row = sheet.createRow(rowIdx++);
@@ -134,29 +144,22 @@ public class LeaveRequestService {
     }
 
     public List<LeaveRequest> getLeaveRequestsByUserId(Long userId) {
-        return leaveRequestRepository.findByUserId(userId);
+        return leaveRequestRepo.findByUserId(userId);
     }
 
-
     public Map<String, Integer> getApprovedLeaveStats(Long userId, int month, int year) {
-        // Define the start and end date for the given month and year
         LocalDate startDate = LocalDate.of(year, month, 1);
         LocalDate endDate = YearMonth.of(year, month).atEndOfMonth();
-
-        // Fetch approved leave requests for the user in the given month and year
-        List<LeaveRequest> leaveRequests = leaveRequestRepository.findByUserIdAndStatusAndStartDateBetween(userId, "อนุมัติแล้ว", startDate, endDate);
-
+        List<LeaveRequest> leaveRequests = leaveRequestRepo.findByUserIdAndStatusAndStartDateBetween(userId, "อนุมัติแล้ว", startDate, endDate);
         // Initialize a map to hold the leave counts for each type
         Map<String, Integer> leaveStats = new HashMap<>();
         leaveStats.put("ลาป่วย", 0);
         leaveStats.put("ลาพักร้อน", 0);
         leaveStats.put("ลากิจ", 0);
         leaveStats.put("ลาคลอด", 0);
-
         // Loop through the leave requests and count the days for each leave type
         for (LeaveRequest leaveRequest : leaveRequests) {
             String leaveTypeName = leaveRequest.getLeaveType().getName();
-
             // If leave request matches a known leave type, calculate the leave days
             if (leaveStats.containsKey(leaveTypeName)) {
                 // Calculate the number of days the leave request covers
@@ -168,7 +171,6 @@ public class LeaveRequestService {
         // Add total leave days
         int totalLeaveDays = leaveStats.values().stream().mapToInt(Integer::intValue).sum();
         leaveStats.put("รวม", totalLeaveDays);
-
         return leaveStats;
     }
 }

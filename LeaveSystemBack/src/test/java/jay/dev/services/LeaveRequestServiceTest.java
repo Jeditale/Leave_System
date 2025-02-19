@@ -10,15 +10,14 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -40,7 +39,7 @@ class LeaveRequestServiceTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
         
-        // Setup common test data
+        // Setup test request data
         sampleLeaveRequest = new LeaveRequest();
         sampleLeaveRequest.setId(1L);
         sampleLeaveRequest.setStatus("Pending");
@@ -48,7 +47,7 @@ class LeaveRequestServiceTest {
         LeaveType leaveType = new LeaveType();
         leaveType.setName("Annual Leave");
         sampleLeaveRequest.setLeaveType(leaveType);
-        
+
         startDate = LocalDate.now();
         endDate = startDate.plusDays(5);
         sampleLeaveRequest.setStartDate(startDate);
@@ -58,9 +57,7 @@ class LeaveRequestServiceTest {
     @Test
     void shouldCreateAndSaveLeaveRequest() {
         when(leaveRequestRepository.save(any(LeaveRequest.class))).thenReturn(sampleLeaveRequest);
-        
         LeaveRequest result = leaveRequestService.createLeaveRequest(sampleLeaveRequest);
-        
         assertNotNull(result);
         assertEquals(sampleLeaveRequest.getId(), result.getId());
         verify(leaveRequestRepository).save(sampleLeaveRequest);
@@ -70,9 +67,7 @@ class LeaveRequestServiceTest {
     void shouldReturnAllLeaveRequests() {
         List<LeaveRequest> expectedRequests = Arrays.asList(sampleLeaveRequest, new LeaveRequest());
         when(leaveRequestRepository.findAll()).thenReturn(expectedRequests);
-
         List<LeaveRequest> result = leaveRequestService.getAllLeaveRequests();
-
         assertNotNull(result);
         assertEquals(2, result.size());
         verify(leaveRequestRepository).findAll();
@@ -82,9 +77,7 @@ class LeaveRequestServiceTest {
     void shouldUpdateStatusWhenRequestExists() {
         when(leaveRequestRepository.findById(1L)).thenReturn(Optional.of(sampleLeaveRequest));
         when(leaveRequestRepository.save(any(LeaveRequest.class))).thenReturn(sampleLeaveRequest);
-
         LeaveRequest result = leaveRequestService.updateLeaveRequestStatus(1L, "Approved");
-
         assertNotNull(result);
         assertEquals("Approved", result.getStatus());
         verify(leaveRequestRepository).save(result);
@@ -93,9 +86,7 @@ class LeaveRequestServiceTest {
     @Test
     void shouldReturnNullWhenRequestNotFound() {
         when(leaveRequestRepository.findById(1L)).thenReturn(Optional.empty());
-
         LeaveRequest result = leaveRequestService.updateLeaveRequestStatus(1L, "Approved");
-
         assertNull(result);
         verify(leaveRequestRepository, never()).save(any());
     }
@@ -103,9 +94,7 @@ class LeaveRequestServiceTest {
     @Test
     void shouldReturnPendingRequestCount() {
         when(leaveRequestRepository.countByStatusAndUserId("Pending", 1L)).thenReturn(5L);
-
         long result = leaveRequestService.countPendingLeaveRequests(1L);
-
         assertEquals(5L, result);
         verify(leaveRequestRepository).countByStatusAndUserId("Pending", 1L);
     }
@@ -114,9 +103,7 @@ class LeaveRequestServiceTest {
     void shouldReturnCurrentYearLeaveCount() {
         when(leaveRequestRepository.countByUserIdAndStatusAndStartDateAfter(
             eq(1L), eq("Approved"), any(LocalDate.class))).thenReturn(3L);
-
         long result = leaveRequestService.countThisYearLeave(1L, "Approved");
-
         assertEquals(3L, result);
         verify(leaveRequestRepository).countByUserIdAndStatusAndStartDateAfter(
             eq(1L), eq("Approved"), any(LocalDate.class));
@@ -126,9 +113,7 @@ class LeaveRequestServiceTest {
     void shouldReturnListOfPendingRequests() {
         List<LeaveRequest> pendingRequests = Arrays.asList(sampleLeaveRequest);
         when(leaveRequestRepository.findByStatus("รออนุมัติ")).thenReturn(pendingRequests);
-
         List<LeaveRequest> result = leaveRequestService.getPendingRequests();
-
         assertNotNull(result);
         assertEquals(1, result.size());
         verify(leaveRequestRepository).findByStatus("รออนุมัติ");
@@ -138,12 +123,9 @@ class LeaveRequestServiceTest {
     void shouldApproveExistingLeaveRequest() {
         when(leaveRequestRepository.findById(1L)).thenReturn(Optional.of(sampleLeaveRequest));
         when(leaveRequestRepository.save(any(LeaveRequest.class))).thenReturn(sampleLeaveRequest);
-
         LeaveRequest updateRequest = new LeaveRequest();
         updateRequest.setComment("Approved with conditions");
-        
         leaveRequestService.approveLeave(1L, updateRequest);
-
         assertEquals("อนุมัติแล้ว", sampleLeaveRequest.getStatus());
         assertEquals("Approved with conditions", sampleLeaveRequest.getComment());
         verify(leaveRequestRepository).save(sampleLeaveRequest);
@@ -152,7 +134,6 @@ class LeaveRequestServiceTest {
     @Test
     void shouldThrowExceptionWhenApprovingNonExistingLeaveRequest() {
         when(leaveRequestRepository.findById(1L)).thenReturn(Optional.empty());
-
         assertThrows(EntityNotFoundException.class, () -> 
             leaveRequestService.approveLeave(1L, new LeaveRequest())
         );
@@ -163,12 +144,9 @@ class LeaveRequestServiceTest {
     void shouldRejectExistingLeaveRequest() {
         when(leaveRequestRepository.findById(1L)).thenReturn(Optional.of(sampleLeaveRequest));
         when(leaveRequestRepository.save(any(LeaveRequest.class))).thenReturn(sampleLeaveRequest);
-
         LeaveRequest updateRequest = new LeaveRequest();
         updateRequest.setComment("Rejected due to workload");
-        
         leaveRequestService.rejectLeave(1L, updateRequest);
-
         assertEquals("ถูกปฏิเสธ", sampleLeaveRequest.getStatus());
         assertEquals("Rejected due to workload", sampleLeaveRequest.getComment());
         verify(leaveRequestRepository).save(sampleLeaveRequest);
@@ -177,7 +155,6 @@ class LeaveRequestServiceTest {
     @Test
     void shouldThrowExceptionWhenRejectingNonExistingLeaveRequest() {
         when(leaveRequestRepository.findById(1L)).thenReturn(Optional.empty());
-
         assertThrows(EntityNotFoundException.class, () -> 
             leaveRequestService.rejectLeave(1L, new LeaveRequest())
         );
@@ -187,9 +164,7 @@ class LeaveRequestServiceTest {
     @Test
     void shouldReturnPendingLeaveCount() {
         when(leaveRequestRepository.countPendingLeavesByUserId(1L)).thenReturn(3L);
-
         long result = leaveRequestService.getPendingLeaveCount(1L);
-
         assertEquals(3L, result);
         verify(leaveRequestRepository).countPendingLeavesByUserId(1L);
     }
@@ -223,17 +198,15 @@ class LeaveRequestServiceTest {
 
     @Test
     void shouldExportLeaveDataToExcel() throws IOException {
-        // Create a complete user
+        // Create a Test user
         User user = new User();
         user.setId(1L);
         user.setUsername("testUser");
         user.setDepartment("IT");
-
         // Create a complete leave type
         LeaveType leaveType = new LeaveType();
         leaveType.setId(1L);
         leaveType.setName("Annual Leave");
-
         // Create a complete leave request
         LeaveRequest request = new LeaveRequest();
         request.setId(1L);
@@ -258,13 +231,9 @@ class LeaveRequestServiceTest {
 
     @Test
     void shouldReturnLeaveRequestsByUserId() {
-        // Arrange
         List<LeaveRequest> expectedLeaves = Arrays.asList(sampleLeaveRequest);
         when(leaveRequestRepository.findByUserId(1L)).thenReturn(expectedLeaves);
-
-        // Act
         List<LeaveRequest> result = leaveRequestService.getLeaveRequestsByUserId(1L);
-
         // Assert
         assertNotNull(result);
         assertEquals(1, result.size());
@@ -274,17 +243,14 @@ class LeaveRequestServiceTest {
 
     @Test
     void shouldCalculateApprovedLeaveStats() {
-        // Arrange
         User user = new User();
         user.setId(1L);
-
         // Create leave types
         LeaveType sickLeave = new LeaveType();
         sickLeave.setName("ลาป่วย");
         
         LeaveType annualLeave = new LeaveType();
         annualLeave.setName("ลาพักร้อน");
-
         // Create leave requests
         LeaveRequest request1 = new LeaveRequest();
         request1.setUser(user);
@@ -307,10 +273,10 @@ class LeaveRequestServiceTest {
             any(LocalDate.class)
         )).thenReturn(leaveRequests);
 
-        // Act
+
         Map<String, Integer> result = leaveRequestService.getApprovedLeaveStats(1L, 2, 2024);
 
-        // Assert
+
         assertNotNull(result);
         assertEquals(5, result.size());
         assertEquals(2, result.get("ลาป่วย"));
@@ -329,18 +295,14 @@ class LeaveRequestServiceTest {
 
     @Test
     void shouldReturnZeroApprovedLeaveStatsWhenNoLeaves() {
-        // Arrange
         when(leaveRequestRepository.findByUserIdAndStatusAndStartDateBetween(
             anyLong(), 
             anyString(), 
             any(LocalDate.class), 
             any(LocalDate.class)
         )).thenReturn(Collections.emptyList());
-
-        // Act
         Map<String, Integer> result = leaveRequestService.getApprovedLeaveStats(1L, 2, 2024);
 
-        // Assert
         assertNotNull(result);
         assertEquals(5, result.size());
         assertEquals(0, result.get("ลาป่วย"));
@@ -359,19 +321,15 @@ class LeaveRequestServiceTest {
 
     @Test
     void shouldIgnoreUnknownLeaveTypeWhenCalculatingApprovedLeaveStats() {
-        // Arrange
         User user = new User();
         user.setId(1L);
 
-        // Create known leave type
         LeaveType sickLeave = new LeaveType();
         sickLeave.setName("ลาป่วย");
         
-        // Create unknown leave type
         LeaveType unknownLeave = new LeaveType();
         unknownLeave.setName("ลาประเภทอื่นๆ");
 
-        // Create leave requests with both known and unknown types
         LeaveRequest request1 = new LeaveRequest();
         request1.setUser(user);
         request1.setLeaveType(sickLeave);
@@ -393,10 +351,8 @@ class LeaveRequestServiceTest {
             any(LocalDate.class)
         )).thenReturn(leaveRequests);
 
-        // Act
         Map<String, Integer> result = leaveRequestService.getApprovedLeaveStats(1L, 2, 2024);
 
-        // Assert
         assertNotNull(result);
         assertEquals(5, result.size());
         assertEquals(2, result.get("ลาป่วย"));
@@ -414,5 +370,60 @@ class LeaveRequestServiceTest {
             eq(LocalDate.of(2024, 2, 1)),
             eq(LocalDate.of(2024, 2, 29))
         );
+    }
+
+    @Test
+    void approveLeaveRequestWithValidComment() {
+        String approvalComment = "Approved - Team capacity is sufficient";
+        when(leaveRequestRepository.findById(1L)).thenReturn(Optional.of(sampleLeaveRequest));
+        when(leaveRequestRepository.save(any(LeaveRequest.class))).thenReturn(sampleLeaveRequest);
+
+        LeaveRequest updateRequest = new LeaveRequest();
+        updateRequest.setComment(approvalComment);
+        
+        leaveRequestService.approveLeave(1L, updateRequest);
+        // Verify
+        assertEquals("อนุมัติแล้ว", sampleLeaveRequest.getStatus());
+        assertEquals(approvalComment, sampleLeaveRequest.getComment());
+        verify(leaveRequestRepository).save(sampleLeaveRequest);
+    }
+
+    @Test
+    void rejectLeaveRequestWithValidReason() {
+        String rejectionReason = "Team capacity is limited during this period";
+        when(leaveRequestRepository.findById(1L)).thenReturn(Optional.of(sampleLeaveRequest));
+        when(leaveRequestRepository.save(any(LeaveRequest.class))).thenReturn(sampleLeaveRequest);
+
+        LeaveRequest updateRequest = new LeaveRequest();
+        updateRequest.setComment(rejectionReason);
+
+        leaveRequestService.rejectLeave(1L, updateRequest);
+        // Verify
+        assertEquals("ถูกปฏิเสธ", sampleLeaveRequest.getStatus());
+        assertEquals(rejectionReason, sampleLeaveRequest.getComment());
+        verify(leaveRequestRepository).save(sampleLeaveRequest);
+    }
+
+    @Test
+    void calculateMonthlyLeaveStatistics() {
+        LeaveRequest annualLeave = createLeaveRequest("Annual Leave", "อนุมัติแล้ว");
+        LeaveRequest sickLeave = createLeaveRequest("Sick Leave", "อนุมัติแล้ว");
+        LocalDate startDate = LocalDate.of(2024, 2, 1);
+        LocalDate endDate = YearMonth.of(2024, 2).atEndOfMonth();
+        when(leaveRequestRepository.findByStartDateBetweenAndStatus(startDate, endDate, "อนุมัติแล้ว"))
+            .thenReturn(Arrays.asList(annualLeave, sickLeave));
+
+        Map<String, Integer> stats = leaveRequestService.getLeaveStats(2024, 2);
+        assertEquals(1, stats.get("Annual Leave"));
+        assertEquals(1, stats.get("Sick Leave"));
+    }
+
+    private LeaveRequest createLeaveRequest(String type, String status) {
+        LeaveRequest request = new LeaveRequest();
+        LeaveType leaveType = new LeaveType();
+        leaveType.setName(type);
+        request.setLeaveType(leaveType);
+        request.setStatus(status);
+        return request;
     }
 }
