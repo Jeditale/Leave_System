@@ -56,7 +56,7 @@ class LeaveRequestControllerTest {
     }
 
     @Test
-    void createLeaveRequest_ShouldReturnCreatedRequest() {
+    void shouldCreateAndReturnNewLeaveRequest() {
         when(leaveRequestService.createLeaveRequest(any(LeaveRequest.class))).thenReturn(sampleLeaveRequest);
 
         ResponseEntity<LeaveRequest> response = leaveRequestController.createLeaveRequest(sampleLeaveRequest);
@@ -68,7 +68,7 @@ class LeaveRequestControllerTest {
     }
 
     @Test
-    void getAllLeaveRequests_ShouldReturnListOfRequests() {
+    void shouldReturnAllLeaveRequests() {
         List<LeaveRequest> requests = Arrays.asList(sampleLeaveRequest, new LeaveRequest());
         when(leaveRequestService.getAllLeaveRequests()).thenReturn(requests);
 
@@ -81,7 +81,7 @@ class LeaveRequestControllerTest {
     }
 
     @Test
-    void getRemainingLeaveDays_ShouldReturnBalance() {
+    void shouldReturnRemainingLeaveDays() {
         LeaveBalance balance = new LeaveBalance();
         balance.setRemainingDays(10);
         when(leaveBalanceService.getLeaveBalanceByUserId(1L)).thenReturn(balance);
@@ -95,7 +95,7 @@ class LeaveRequestControllerTest {
     }
 
     @Test
-    void getPendingLeaveCount_ShouldReturnCount() {
+    void shouldReturnPendingLeaveCount() {
         when(leaveRequestService.getPendingLeaveCount(1L)).thenReturn(5L);
 
         ResponseEntity<Long> response = leaveRequestController.getPendingLeaveCount(1L);
@@ -107,7 +107,7 @@ class LeaveRequestControllerTest {
     }
 
     @Test
-    void countPendingLeaveRequests_ShouldReturnCount() {
+    void shouldCountAllPendingRequests() {
         when(leaveRequestService.countPendingLeaveRequests(1L)).thenReturn(3L);
 
         ResponseEntity<Long> response = leaveRequestController.countPendingLeaveRequests(1L);
@@ -119,7 +119,7 @@ class LeaveRequestControllerTest {
     }
 
     @Test
-    void countThisYearLeave_ShouldReturnCount() {
+    void shouldCountApprovedLeavesForCurrentYear() {
         when(leaveRequestService.countThisYearLeave(1L, "Approved")).thenReturn(7L);
 
         ResponseEntity<Long> response = leaveRequestController.countThisYearLeave(1L);
@@ -131,7 +131,7 @@ class LeaveRequestControllerTest {
     }
 
     @Test
-    void getPendingRequests_ShouldReturnPendingList() {
+    void shouldReturnListOfPendingRequests() {
         List<LeaveRequest> pendingRequests = Arrays.asList(sampleLeaveRequest);
         when(leaveRequestService.getPendingRequests()).thenReturn(pendingRequests);
 
@@ -144,7 +144,7 @@ class LeaveRequestControllerTest {
     }
 
     @Test
-    void approveLeave_ShouldCallService() {
+    void shouldApproveLeaveRequest() {
         doNothing().when(leaveRequestService).approveLeave(anyLong(), any(LeaveRequest.class));
 
         ResponseEntity<String> response = leaveRequestController.approveLeave(1L, sampleLeaveRequest);
@@ -153,7 +153,7 @@ class LeaveRequestControllerTest {
     }
 
     @Test
-    void rejectLeave_ShouldCallService() {
+    void shouldRejectLeaveRequest() {
         doNothing().when(leaveRequestService).rejectLeave(anyLong(), any(LeaveRequest.class));
 
         ResponseEntity<String> response = leaveRequestController.rejectLeave(1L, sampleLeaveRequest);
@@ -162,7 +162,7 @@ class LeaveRequestControllerTest {
     }
 
     @Test
-    void getLeaveStats_ShouldReturnStats() {
+    void shouldReturnLeaveStats() {
         Map<String, Integer> stats = new HashMap<>();
         stats.put("Annual", 5);
         stats.put("Sick", 3);
@@ -178,7 +178,7 @@ class LeaveRequestControllerTest {
     }
 
     @Test
-    void exportLeaveDataToExcel_Success_ShouldReturnExcelData() throws IOException {
+    void shouldExportLeaveDataToExcelSuccessfully() throws IOException {
         String base64Excel = "base64EncodedExcelData";
         when(leaveRequestService.exportLeaveDataToExcel(2024, 2)).thenReturn(base64Excel);
 
@@ -191,7 +191,7 @@ class LeaveRequestControllerTest {
     }
 
     @Test
-    void exportLeaveDataToExcel_Error_ShouldReturn500() throws IOException {
+    void shouldReturn500WhenExportingLeaveDataToExcelFails() throws IOException {
         when(leaveRequestService.exportLeaveDataToExcel(2024, 2)).thenThrow(new IOException("Excel generation failed"));
 
         ResponseEntity<String> response = leaveRequestController.exportLeaveDataToExcel(2024, 2);
@@ -203,7 +203,7 @@ class LeaveRequestControllerTest {
     }
 
     @Test
-    void getLeavesByUserId_ShouldReturnUserLeaves() {
+    void shouldReturnLeavesByUserId() {
         // Arrange
         List<LeaveRequest> userLeaves = Arrays.asList(sampleLeaveRequest);
         when(leaveRequestService.getLeaveRequestsByUserId(1L)).thenReturn(userLeaves);
@@ -219,7 +219,7 @@ class LeaveRequestControllerTest {
     }
 
     @Test
-    void getLeaveStats_ByUser_ShouldReturnStats() {
+    void shouldReturnLeaveStatsByUser() {
         // Arrange
         Map<String, Integer> expectedStats = new HashMap<>();
         expectedStats.put("ลาป่วย", 2);

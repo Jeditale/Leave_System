@@ -56,7 +56,7 @@ class LeaveRequestServiceTest {
     }
 
     @Test
-    void createLeaveRequest_ShouldSaveAndReturnRequest() {
+    void shouldCreateAndSaveLeaveRequest() {
         when(leaveRequestRepository.save(any(LeaveRequest.class))).thenReturn(sampleLeaveRequest);
         
         LeaveRequest result = leaveRequestService.createLeaveRequest(sampleLeaveRequest);
@@ -67,7 +67,7 @@ class LeaveRequestServiceTest {
     }
 
     @Test
-    void getAllLeaveRequests_ShouldReturnList() {
+    void shouldReturnAllLeaveRequests() {
         List<LeaveRequest> expectedRequests = Arrays.asList(sampleLeaveRequest, new LeaveRequest());
         when(leaveRequestRepository.findAll()).thenReturn(expectedRequests);
 
@@ -79,7 +79,7 @@ class LeaveRequestServiceTest {
     }
 
     @Test
-    void updateLeaveRequestStatus_WhenFound_ShouldUpdate() {
+    void shouldUpdateStatusWhenRequestExists() {
         when(leaveRequestRepository.findById(1L)).thenReturn(Optional.of(sampleLeaveRequest));
         when(leaveRequestRepository.save(any(LeaveRequest.class))).thenReturn(sampleLeaveRequest);
 
@@ -91,7 +91,7 @@ class LeaveRequestServiceTest {
     }
 
     @Test
-    void updateLeaveRequestStatus_WhenNotFound_ShouldReturnNull() {
+    void shouldReturnNullWhenRequestNotFound() {
         when(leaveRequestRepository.findById(1L)).thenReturn(Optional.empty());
 
         LeaveRequest result = leaveRequestService.updateLeaveRequestStatus(1L, "Approved");
@@ -101,7 +101,7 @@ class LeaveRequestServiceTest {
     }
 
     @Test
-    void countPendingLeaveRequests_ShouldReturnCount() {
+    void shouldReturnPendingRequestCount() {
         when(leaveRequestRepository.countByStatusAndUserId("Pending", 1L)).thenReturn(5L);
 
         long result = leaveRequestService.countPendingLeaveRequests(1L);
@@ -111,7 +111,7 @@ class LeaveRequestServiceTest {
     }
 
     @Test
-    void countThisYearLeave_ShouldReturnCount() {
+    void shouldReturnCurrentYearLeaveCount() {
         when(leaveRequestRepository.countByUserIdAndStatusAndStartDateAfter(
             eq(1L), eq("Approved"), any(LocalDate.class))).thenReturn(3L);
 
@@ -123,19 +123,7 @@ class LeaveRequestServiceTest {
     }
 
     @Test
-    void getAllEmployeeLeavesForCalendar_ShouldReturnAllLeaves() {
-        List<LeaveRequest> expectedLeaves = Arrays.asList(sampleLeaveRequest, new LeaveRequest());
-        when(leaveRequestRepository.findAll()).thenReturn(expectedLeaves);
-
-        List<LeaveRequest> result = leaveRequestService.getAllEmployeeLeavesForCalendar();
-
-        assertNotNull(result);
-        assertEquals(2, result.size());
-        verify(leaveRequestRepository).findAll();
-    }
-
-    @Test
-    void getPendingRequests_ShouldReturnPendingList() {
+    void shouldReturnListOfPendingRequests() {
         List<LeaveRequest> pendingRequests = Arrays.asList(sampleLeaveRequest);
         when(leaveRequestRepository.findByStatus("รออนุมัติ")).thenReturn(pendingRequests);
 
@@ -147,7 +135,7 @@ class LeaveRequestServiceTest {
     }
 
     @Test
-    void approveLeave_WhenFound_ShouldApprove() {
+    void shouldApproveExistingLeaveRequest() {
         when(leaveRequestRepository.findById(1L)).thenReturn(Optional.of(sampleLeaveRequest));
         when(leaveRequestRepository.save(any(LeaveRequest.class))).thenReturn(sampleLeaveRequest);
 
@@ -162,7 +150,7 @@ class LeaveRequestServiceTest {
     }
 
     @Test
-    void approveLeave_WhenNotFound_ShouldThrowException() {
+    void shouldThrowExceptionWhenApprovingNonExistingLeaveRequest() {
         when(leaveRequestRepository.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(EntityNotFoundException.class, () -> 
@@ -172,7 +160,7 @@ class LeaveRequestServiceTest {
     }
 
     @Test
-    void rejectLeave_WhenFound_ShouldReject() {
+    void shouldRejectExistingLeaveRequest() {
         when(leaveRequestRepository.findById(1L)).thenReturn(Optional.of(sampleLeaveRequest));
         when(leaveRequestRepository.save(any(LeaveRequest.class))).thenReturn(sampleLeaveRequest);
 
@@ -187,7 +175,7 @@ class LeaveRequestServiceTest {
     }
 
     @Test
-    void rejectLeave_WhenNotFound_ShouldThrowException() {
+    void shouldThrowExceptionWhenRejectingNonExistingLeaveRequest() {
         when(leaveRequestRepository.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(EntityNotFoundException.class, () -> 
@@ -197,7 +185,7 @@ class LeaveRequestServiceTest {
     }
 
     @Test
-    void getPendingLeaveCount_ShouldReturnCount() {
+    void shouldReturnPendingLeaveCount() {
         when(leaveRequestRepository.countPendingLeavesByUserId(1L)).thenReturn(3L);
 
         long result = leaveRequestService.getPendingLeaveCount(1L);
@@ -207,7 +195,7 @@ class LeaveRequestServiceTest {
     }
 
     @Test
-    void getLeaveStats_ShouldReturnStats() {
+    void shouldReturnLeaveStats() {
         LeaveRequest request1 = new LeaveRequest();
         LeaveType type1 = new LeaveType();
         type1.setName("Annual");
@@ -234,7 +222,7 @@ class LeaveRequestServiceTest {
     }
 
     @Test
-    void exportLeaveDataToExcel_ShouldReturnBase64String() throws IOException {
+    void shouldExportLeaveDataToExcel() throws IOException {
         // Create a complete user
         User user = new User();
         user.setId(1L);
@@ -269,7 +257,7 @@ class LeaveRequestServiceTest {
     }
 
     @Test
-    void getLeaveRequestsByUserId_ShouldReturnUserLeaves() {
+    void shouldReturnLeaveRequestsByUserId() {
         // Arrange
         List<LeaveRequest> expectedLeaves = Arrays.asList(sampleLeaveRequest);
         when(leaveRequestRepository.findByUserId(1L)).thenReturn(expectedLeaves);
@@ -285,7 +273,7 @@ class LeaveRequestServiceTest {
     }
 
     @Test
-    void getApprovedLeaveStats_ShouldCalculateCorrectly() {
+    void shouldCalculateApprovedLeaveStats() {
         // Arrange
         User user = new User();
         user.setId(1L);
@@ -340,7 +328,7 @@ class LeaveRequestServiceTest {
     }
 
     @Test
-    void getApprovedLeaveStats_WhenNoLeaves_ShouldReturnZeros() {
+    void shouldReturnZeroApprovedLeaveStatsWhenNoLeaves() {
         // Arrange
         when(leaveRequestRepository.findByUserIdAndStatusAndStartDateBetween(
             anyLong(), 
@@ -370,7 +358,7 @@ class LeaveRequestServiceTest {
     }
 
     @Test
-    void getApprovedLeaveStats_WithUnknownLeaveType_ShouldIgnoreUnknownType() {
+    void shouldIgnoreUnknownLeaveTypeWhenCalculatingApprovedLeaveStats() {
         // Arrange
         User user = new User();
         user.setId(1L);

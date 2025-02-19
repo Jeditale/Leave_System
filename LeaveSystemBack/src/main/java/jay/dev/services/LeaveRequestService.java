@@ -44,10 +44,6 @@ public class LeaveRequestService {
         return leaveRequestRepository.countByUserIdAndStatusAndStartDateAfter(userId, status, LocalDate.now().withDayOfYear(1));
     }
 
-    public List<LeaveRequest> getAllEmployeeLeavesForCalendar() {
-        return leaveRequestRepository.findAll();
-    }
-
     // Get all pending leave requests
     public List<LeaveRequest> getPendingRequests() {
         return leaveRequestRepository.findByStatus("รออนุมัติ");

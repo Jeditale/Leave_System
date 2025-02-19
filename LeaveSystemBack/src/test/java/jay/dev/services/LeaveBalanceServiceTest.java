@@ -29,7 +29,7 @@ class LeaveBalanceServiceTest {
     }
 
     @Test
-    void getLeaveBalanceByUserId_WhenBalanceExists_ShouldReturnBalance() {
+    void shouldReturnBalanceWhenUserExists() {
         // Arrange
         User user = new User();
         user.setId(1L);
@@ -49,7 +49,7 @@ class LeaveBalanceServiceTest {
     }
 
     @Test
-    void getLeaveBalanceByUserId_WhenBalanceDoesNotExist_ShouldThrowException() {
+    void shouldThrowExceptionWhenBalanceNotFound() {
         // Arrange
         when(leaveBalanceRepository.findByUserId(anyLong())).thenReturn(Collections.emptyList());
 
