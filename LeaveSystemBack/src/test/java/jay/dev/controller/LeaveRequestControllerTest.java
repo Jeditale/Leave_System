@@ -62,7 +62,7 @@ class LeaveRequestControllerTest {
         when(leaveRequestService.createLeaveRequest(any(LeaveRequest.class))).thenReturn(sampleLeaveRequest);
         ResponseEntity<LeaveRequest> response = leaveRequestController.createLeaveRequest(sampleLeaveRequest);
         assertNotNull(response);
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(200, response.getStatusCode().value());
         assertEquals(sampleLeaveRequest, response.getBody());
         verify(leaveRequestService).createLeaveRequest(sampleLeaveRequest);
     }
@@ -73,7 +73,7 @@ class LeaveRequestControllerTest {
         when(leaveRequestService.getAllLeaveRequests()).thenReturn(requests);
         ResponseEntity<List<LeaveRequest>> response = leaveRequestController.getAllLeaveRequests();
         assertNotNull(response);
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(200, response.getStatusCode().value());
         assertEquals(requests, response.getBody());
         assertEquals(2, response.getBody().size());
     }
@@ -85,7 +85,7 @@ class LeaveRequestControllerTest {
         when(leaveBalanceService.getLeaveBalanceByUserId(1L)).thenReturn(balance);
         ResponseEntity<Integer> response = leaveRequestController.getRemainingLeaveDays(1L);
         assertNotNull(response);
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(200, response.getStatusCode().value());
         assertEquals(10, response.getBody());
         verify(leaveBalanceService).getLeaveBalanceByUserId(1L);
     }
@@ -95,7 +95,7 @@ class LeaveRequestControllerTest {
         when(leaveRequestService.getPendingLeaveCount(1L)).thenReturn(5L);
         ResponseEntity<Long> response = leaveRequestController.getPendingLeaveCount(1L);
         assertNotNull(response);
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(200, response.getStatusCode().value());
         assertEquals(5L, response.getBody());
         verify(leaveRequestService).getPendingLeaveCount(1L);
     }
@@ -105,7 +105,7 @@ class LeaveRequestControllerTest {
         when(leaveRequestService.countPendingLeaveRequests(1L)).thenReturn(3L);
         ResponseEntity<Long> response = leaveRequestController.countPendingLeaveRequests(1L);
         assertNotNull(response);
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(200, response.getStatusCode().value());
         assertEquals(3L, response.getBody());
         verify(leaveRequestService).countPendingLeaveRequests(1L);
     }
@@ -115,7 +115,7 @@ class LeaveRequestControllerTest {
         when(leaveRequestService.countThisYearLeave(1L, "Approved")).thenReturn(7L);
         ResponseEntity<Long> response = leaveRequestController.countThisYearLeave(1L);
         assertNotNull(response);
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(200, response.getStatusCode().value());
         assertEquals(7L, response.getBody());
         verify(leaveRequestService).countThisYearLeave(1L, "Approved");
     }
@@ -157,7 +157,7 @@ class LeaveRequestControllerTest {
         ResponseEntity<String> response = leaveRequestController.approveLeave(nonExistentId, request);
 
         // Verify
-        assertEquals(404, response.getStatusCodeValue());
+        assertEquals(404, response.getStatusCode().value());
         assertEquals("Leave request not found", response.getBody());
         verify(leaveRequestService).approveLeave(nonExistentId, request);
     }
@@ -174,7 +174,7 @@ class LeaveRequestControllerTest {
         ResponseEntity<String> response = leaveRequestController.rejectLeave(nonExistentId, request);
 
         // Verify
-        assertEquals(404, response.getStatusCodeValue());
+        assertEquals(404, response.getStatusCode().value());
         assertEquals("Leave request not found", response.getBody());
         verify(leaveRequestService).rejectLeave(nonExistentId, request);
     }
@@ -187,7 +187,7 @@ class LeaveRequestControllerTest {
         when(leaveRequestService.getLeaveStats(2024, 2)).thenReturn(stats);
         ResponseEntity<Map<String, Integer>> response = leaveRequestController.getLeaveStats(2024, 2);
         assertNotNull(response);
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(200, response.getStatusCode().value());
         assertEquals(stats, response.getBody());
         assertEquals(2, response.getBody().size());
         verify(leaveRequestService).getLeaveStats(2024, 2);
@@ -199,7 +199,7 @@ class LeaveRequestControllerTest {
         when(leaveRequestService.exportLeaveDataToExcel(2024, 2)).thenReturn(base64Excel);
         ResponseEntity<String> response = leaveRequestController.exportLeaveDataToExcel(2024, 2);
         assertNotNull(response);
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(200, response.getStatusCode().value());
         assertEquals(base64Excel, response.getBody());
         verify(leaveRequestService).exportLeaveDataToExcel(2024, 2);
     }
@@ -209,7 +209,7 @@ class LeaveRequestControllerTest {
         when(leaveRequestService.exportLeaveDataToExcel(2024, 2)).thenThrow(new IOException("Excel generation failed"));
         ResponseEntity<String> response = leaveRequestController.exportLeaveDataToExcel(2024, 2);
         assertNotNull(response);
-        assertEquals(500, response.getStatusCodeValue());
+        assertEquals(500, response.getStatusCode().value());
         assertEquals("Error generating Excel file", response.getBody());
         verify(leaveRequestService).exportLeaveDataToExcel(2024, 2);
     }
